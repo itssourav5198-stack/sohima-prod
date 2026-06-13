@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sohima Production</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--gold:#C9A84C;--gold-dim:#8A6A28;--gold-light:#E8C97A;
+--bg:#080808;--s1:#101010;--s2:#181818;--s3:#222215;
+--cream:#F2EAD8;--muted:#8A826E;--border:#2A2820;
+--red:#E24B4A;--green:#3B6D11;--amber:#BA7517;--teal:#1D9E75;
+}
+body{background:var(--bg);color:var(--cream);font-family:'Jost',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;letter-spacing:.02em}
+.bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;width:100%}
+.screen.active{display:flex;flex-direction:column}
+
+/* ── SPLASH ── */
+#splash{align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
+.splash-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 60%,#1a140500 0%,#080808 100%);pointer-events:none}
+.splash-lines{position:absolute;inset:0;opacity:.06;background:repeating-linear-gradient(0deg,transparent,transparent 39px,var(--gold) 40px)}
+.splash-center{position:relative;text-align:center;z-index:1}
+.splash-logo{width:72px;height:72px;margin:0 auto 28px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;transform:rotate(0deg)}
+.splash-logo svg{width:36px;height:36px;fill:var(--gold)}
+.splash-name{font-size:52px;line-height:1;color:var(--gold);margin-bottom:4px}
+.splash-sub{font-family:'Jost',sans-serif;font-weight:300;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.splash-line{width:60px;height:1px;background:var(--gold);margin:28px auto}
+.splash-btn{display:inline-block;padding:14px 52px;border:1px solid var(--gold);color:var(--gold);font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;background:transparent;transition:all .3s}
+.splash-btn:hover{background:var(--gold);color:var(--bg)}
+.film-strip{position:absolute;bottom:0;left:0;right:0;height:40px;display:flex;align-items:center;gap:0;overflow:hidden;opacity:.18}
+.film-cell{flex-shrink:0;width:32px;height:32px;border:1px solid var(--gold);margin:0 2px}
+
+/* ── ROLE SELECT ── */
+#roleselect{justify-content:flex-start;padding:0}
+.screen-header{padding:40px 40px 0;border-bottom:1px solid var(--border);padding-bottom:28px;display:flex;align-items:center;justify-content:space-between}
+.screen-header-logo{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;color:var(--gold);font-size:22px}
+.screen-title{padding:40px 40px 20px;max-width:480px}
+.screen-title h2{font-size:38px;font-weight:300;line-height:1.1;color:var(--cream)}
+.screen-title p{color:var(--muted);font-size:14px;margin-top:10px;font-weight:300}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 40px;max-width:900px}
+.role-card{border:1px solid var(--border);padding:24px 20px;cursor:pointer;background:var(--s1);transition:all .25s;position:relative;overflow:hidden}
+.role-card::before{content:'';position:absolute;inset:0;border:1.5px solid var(--gold);opacity:0;transition:opacity .25s}
+.role-card:hover::before,.role-card.selected::before{opacity:1}
+.role-card:hover{background:var(--s2)}
+.role-card.selected{background:var(--s3)}
+.role-icon{font-size:28px;margin-bottom:16px}
+.role-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--cream)}
+.role-desc{font-size:12px;color:var(--muted);margin-top:6px;font-weight:300}
+.continue-row{padding:28px 40px;display:flex;gap:14px;align-items:center}
+.btn-gold{padding:14px 40px;background:var(--gold);color:var(--bg);font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;font-weight:500;transition:all .2s}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-gold:disabled{opacity:.35;cursor:default}
+.btn-outline{padding:14px 32px;background:transparent;color:var(--muted);font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:var(--muted);color:var(--cream)}
+
+/* ── CODE ENTRY ── */
+#codeentry{justify-content:flex-start}
+.code-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 40px}
+.code-box{max-width:440px;width:100%;text-align:center}
+.code-role-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--gold);padding:8px 20px;margin-bottom:32px;font-size:13px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase}
+.code-title{font-size:36px;font-weight:300;margin-bottom:10px}
+.code-sub{font-size:14px;color:var(--muted);font-weight:300;margin-bottom:40px;line-height:1.7}
+.otp-row{display:flex;gap:12px;justify-content:center;margin-bottom:36px}
+.otp-cell{width:48px;height:60px;background:var(--s1);border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;font-family:'Cormorant Garamond',serif;font-weight:600;color:var(--cream);transition:border-color .2s;position:relative;cursor:text}
+.otp-cell.filled{border-bottom-color:var(--gold);color:var(--gold)}
+.otp-cell.active{border-bottom-color:var(--gold-light)}
+.otp-input-real{position:absolute;inset:0;opacity:0;width:100%;font-size:1px}
+.code-error{color:#E24B4A;font-size:13px;min-height:20px;margin-bottom:20px;letter-spacing:.02em}
+.code-lockout{color:var(--amber);font-size:13px;margin-bottom:16px}
+.attempts-dots{display:flex;gap:8px;justify-content:center;margin-bottom:28px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border)}
+.dot.used{background:#E24B4A}
+
+/* ── LOGIN ── */
+#loginscreen{justify-content:flex-start}
+.login-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 40px}
+.login-box{max-width:400px;width:100%}
+.login-box h2{font-size:36px;font-weight:300;margin-bottom:8px}
+.login-box p{color:var(--muted);font-size:14px;margin-bottom:40px;font-weight:300}
+.form-field{margin-bottom:24px}
+.form-label{display:block;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.form-input{width:100%;background:var(--s1);border:none;border-bottom:1px solid var(--border);padding:14px 0;font-size:15px;color:var(--cream);font-family:'Jost',sans-serif;outline:none;transition:border-color .2s}
+.form-input:focus{border-bottom-color:var(--gold)}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.login-box .btn-gold{width:100%;padding:16px}
+
+/* ── DASHBOARD SHELL ── */
+#dashboard{flex-direction:column;min-height:100vh}
+.dash-header{background:var(--s1);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.dash-logo{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;color:var(--gold);font-size:20px}
+.dash-user{display:flex;align-items:center;gap:12px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--bg);font-family:'Jost',sans-serif}
+.dash-role-pill{font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--gold);color:var(--gold)}
+.dash-body{flex:1;display:flex;overflow:hidden}
+.dash-sidebar{width:220px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:28px 0}
+.nav-item{display:flex;align-items:center;gap:12px;padding:14px 28px;font-size:14px;color:var(--muted);cursor:pointer;transition:all .2s;border-left:2px solid transparent;font-weight:300;letter-spacing:.04em}
+.nav-item:hover{color:var(--cream);background:var(--s2)}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--s3)}
+.nav-icon{font-size:18px;width:20px;text-align:center}
+.dash-main{flex:1;overflow-y:auto;padding:36px 40px}
+.tab-view{display:none}.tab-view.active{display:block}
+
+/* ── HOME TAB ── */
+.welcome-line{font-size:32px;font-weight:300;margin-bottom:6px}
+.welcome-line span{color:var(--gold)}
+.welcome-sub{color:var(--muted);font-size:14px;margin-bottom:36px;font-weight:300}
+.stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+.stat-card{background:var(--s1);border:1px solid var(--border);padding:24px;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);opacity:.3}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--gold);line-height:1}
+.stat-label{font-size:12px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+.section-title{font-size:22px;font-weight:400;margin-bottom:20px;color:var(--cream);display:flex;align-items:center;gap:12px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.activity-feed{display:flex;flex-direction:column;gap:12px}
+.activity-item{background:var(--s1);border:1px solid var(--border);border-left:3px solid var(--gold);padding:16px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.activity-msg{font-size:14px;color:var(--cream);font-weight:300;line-height:1.6}
+.activity-msg strong{color:var(--gold);font-weight:500}
+.activity-time{font-size:12px;color:var(--muted);white-space:nowrap;margin-top:2px}
+
+/* ── PROJECTS TAB ── */
+.filter-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px}
+.filter-tab{padding:12px 24px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;font-weight:300}
+.filter-tab:hover{color:var(--cream)}
+.filter-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.project-card{background:var(--s1);border:1px solid var(--border);padding:24px;cursor:pointer;transition:all .2s;position:relative}
+.project-card:hover{border-color:var(--gold-dim);background:var(--s2)}
+.project-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.project-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;line-height:1.2;flex:1;padding-right:10px}
+.type-badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--gold);color:var(--gold);white-space:nowrap;flex-shrink:0}
+.status-pill{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;margin-bottom:14px;font-weight:400}
+.status-pill.completed{background:#0A1F0A;color:#5CB85C;border:1px solid #2A4A2A}
+.status-pill.in_progress{background:#1F1500;color:#E8A838;border:1px solid #3A2800}
+.status-pill.upcoming{background:#0A0F1F;color:#5A8FE8;border:1px solid #1A2A4A}
+.member-stack{display:flex;margin-bottom:16px}
+.member-av{width:28px;height:28px;border-radius:50%;border:2px solid var(--s1);margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;font-family:'Jost',sans-serif}
+.member-av:first-child{margin-left:0}
+.progress-track{background:var(--border);height:3px;border-radius:0;overflow:hidden;margin-bottom:10px}
+.progress-fill{height:100%;background:var(--gold);transition:width .4s}
+.project-meta{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
+.add-project-btn{display:flex;align-items:center;gap:8px;padding:12px 24px;border:1px dashed var(--gold-dim);color:var(--gold-dim);font-family:'Jost',sans-serif;font-size:13px;cursor:pointer;background:transparent;transition:all .2s;letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
+.add-project-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── TEAM TAB ── */
+.team-list{display:flex;flex-direction:column;gap:10px}
+.team-member{background:var(--s1);border:1px solid var(--border);padding:18px 24px;display:flex;align-items:center;gap:20px;transition:all .2s}
+.team-member:hover{border-color:var(--border);background:var(--s2)}
+.tm-info{flex:1}
+.tm-name{font-size:16px;font-weight:400;margin-bottom:4px}
+.tm-email{font-size:13px;color:var(--muted);font-weight:300}
+.tm-role-badge{font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border:1px solid;margin-right:8px}
+.tm-role-badge.director{border-color:var(--gold);color:var(--gold)}
+.tm-role-badge.editor{border-color:#1D9E75;color:#1D9E75}
+.tm-role-badge.narrator{border-color:#D85A30;color:#D85A30}
+.tm-role-badge.author{border-color:#7F77DD;color:#7F77DD}
+.tm-role-badge.producer{border-color:#5A8FE8;color:#5A8FE8}
+.online-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.online-dot.online{background:#3B6D11;box-shadow:0 0 0 2px #1a2e10}
+.online-dot.offline{background:var(--border)}
+.tm-projects{font-size:12px;color:var(--muted)}
+.tm-actions{display:flex;gap:8px}
+.icon-btn{background:none;border:1px solid var(--border);padding:8px 12px;color:var(--muted);cursor:pointer;font-size:12px;letter-spacing:.08em;text-transform:uppercase;transition:all .2s}
+.icon-btn:hover{border-color:var(--red);color:#E24B4A}
+.add-member-btn{display:flex;align-items:center;gap:8px;padding:12px 24px;border:1px dashed var(--gold-dim);color:var(--gold-dim);font-family:'Jost',sans-serif;font-size:13px;cursor:pointer;background:transparent;transition:all .2s;letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
+.add-member-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── PROFILE ── */
+.profile-card{max-width:560px;background:var(--s1);border:1px solid var(--border);padding:40px}
+.profile-avatar-big{width:80px;height:80px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:500;color:var(--gold);background:var(--s2);margin-bottom:24px;font-family:'Jost',sans-serif}
+.profile-name{font-size:32px;font-weight:300;margin-bottom:6px}
+.profile-meta{color:var(--muted);font-size:14px;margin-bottom:32px}
+.profile-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);font-size:14px}
+.profile-row:last-child{border-bottom:none}
+.profile-key{color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.profile-val{color:var(--cream);font-weight:300}
+.logout-btn{margin-top:32px;padding:14px 36px;border:1px solid #E24B4A;color:#E24B4A;background:transparent;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.logout-btn:hover{background:#E24B4A;color:#fff}
+
+/* ── MODALS ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border);border-top:2px solid var(--gold);max-width:560px;width:90%;max-height:85vh;overflow-y:auto;padding:40px}
+.modal-title{font-size:28px;font-weight:300;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between}
+.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1}
+.modal-close:hover{color:var(--cream)}
+.form-row{margin-bottom:20px}
+.form-row label{display:block;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.form-row input,.form-row select,.form-row textarea{width:100%;background:var(--s2);border:none;border-bottom:1px solid var(--border);padding:12px 0;font-size:14px;color:var(--cream);font-family:'Jost',sans-serif;outline:none;transition:border-color .2s}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-bottom-color:var(--gold)}
+.form-row select option{background:var(--s2)}
+.form-row textarea{resize:vertical;min-height:80px}
+.modal-actions{display:flex;gap:12px;margin-top:32px;justify-content:flex-end}
+
+/* ── PROJECT DETAIL MODAL ── */
+.proj-detail-header{border-bottom:1px solid var(--border);padding-bottom:24px;margin-bottom:28px}
+.proj-detail-type{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border:1px solid var(--gold);color:var(--gold);margin-bottom:14px}
+.proj-detail-title{font-size:30px;font-weight:300;margin-bottom:12px}
+.proj-detail-desc{font-size:14px;color:var(--muted);font-weight:300;line-height:1.7}
+.task-list{margin-top:20px}
+.task-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.task-item:last-child{border-bottom:none}
+.task-status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.task-status-dot.not_started{background:var(--border)}
+.task-status-dot.in_progress{background:var(--amber)}
+.task-status-dot.done{background:#3B6D11}
+.task-name{flex:1;font-size:14px;font-weight:300}
+.task-owner{font-size:12px;color:var(--muted)}
+.task-status-btn{font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all .2s}
+.task-status-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── NOTIFICATION TOAST ── */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--s2);border:1px solid var(--gold);border-left:3px solid var(--gold);padding:16px 24px;font-size:14px;color:var(--cream);z-index:999;transform:translateX(120%);transition:transform .3s;max-width:340px;font-weight:300}
+.toast.show{transform:translateX(0)}
+.toast strong{color:var(--gold);font-weight:500}
+
+/* ── UTILITY ── */
+.gold{color:var(--gold)}
+.flex{display:flex}.items-center{align-items:center}.gap-8{gap:8px}.gap-12{gap:12px}
+.mt-8{margin-top:8px}.mt-16{margin-top:16px}.mt-24{margin-top:24px}
+.mb-20{margin-bottom:20px}
+.text-muted{color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Sohima Production — cinematic production house management application with role-based dashboards</h2>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════ SCREEN 1: SPLASH ══════ -->
+<div class="screen active" id="splash">
+  <div class="splash-lines"></div>
+  <div class="splash-bg"></div>
+  <div class="film-strip" aria-hidden="true">
+    <div class="film-cell"></div><div class="film-cell"></div><div class="film-cell"></div>
+    <div class="film-cell"></div><div class="film-cell"></div><div class="film-cell"></div>
+    <div class="film-cell"></div><div class="film-cell"></div><div class="film-cell"></div>
+    <div class="film-cell"></div><div class="film-cell"></div><div class="film-cell"></div>
+    <div class="film-cell"></div><div class="film-cell"></div><div class="film-cell"></div>
+    <div class="film-cell"></div><div class="film-cell"></div><div class="film-cell"></div>
+  </div>
+  <div class="splash-center">
+    <div class="splash-logo" aria-hidden="true">
+      <svg viewBox="0 0 36 36"><polygon points="6,4 30,18 6,32" /><rect x="0" y="0" width="3" height="36"/></svg>
+    </div>
+    <div class="splash-name bebas">Sohima Production</div>
+    <div class="splash-sub">Book · Audiobook · Animation</div>
+    <div class="splash-line"></div>
+    <button class="splash-btn" onclick="goTo('roleselect')">Enter</button>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 2: ROLE SELECTION ══════ -->
+<div class="screen" id="roleselect">
+  <div class="screen-header">
+    <div class="screen-header-logo">Sohima Production</div>
+    <div class="text-muted" style="font-size:13px;font-weight:300">Step 1 of 3</div>
+  </div>
+  <div class="screen-title">
+    <h2>Who are you?</h2>
+    <p>Select your role to begin. Your access level will be determined by the role you choose.</p>
+  </div>
+  <div class="role-grid">
+    <div class="role-card" data-role="director" onclick="selectRole(this)">
+      <div class="role-icon">🎬</div>
+      <div class="role-name">Director</div>
+      <div class="role-desc">Full access · Manage projects & team</div>
+    </div>
+    <div class="role-card" data-role="author" onclick="selectRole(this)">
+      <div class="role-icon">✍️</div>
+      <div class="role-name">Author / Writer</div>
+      <div class="role-desc">View assigned projects · Update tasks</div>
+    </div>
+    <div class="role-card" data-role="editor" onclick="selectRole(this)">
+      <div class="role-icon">🎨</div>
+      <div class="role-name">Editor / Animator</div>
+      <div class="role-desc">View assigned projects · Update tasks</div>
+    </div>
+    <div class="role-card" data-role="narrator" onclick="selectRole(this)">
+      <div class="role-icon">🎙</div>
+      <div class="role-name">Narrator / Voice</div>
+      <div class="role-desc">View assigned projects · Update tasks</div>
+    </div>
+    <div class="role-card" data-role="producer" onclick="selectRole(this)">
+      <div class="role-icon">📦</div>
+      <div class="role-name">Producer</div>
+      <div class="role-desc">View assigned projects · Update tasks</div>
+    </div>
+  </div>
+  <div class="continue-row">
+    <button class="btn-gold" id="roleContBtn" disabled onclick="goTo('codeentry')">Continue</button>
+    <span class="text-muted" style="font-size:13px;font-weight:300" id="roleSelMsg">Select a role above</span>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 3: CODE ENTRY ══════ -->
+<div class="screen" id="codeentry">
+  <div class="screen-header">
+    <div class="screen-header-logo">Sohima Production</div>
+    <div class="text-muted" style="font-size:13px;font-weight:300">Step 2 of 3</div>
+  </div>
+  <div class="code-body">
+    <div class="code-box">
+      <div class="code-role-badge" id="codeBadge">🎬 &nbsp; Director</div>
+      <h2 class="code-title">Enter Your Access Code</h2>
+      <p class="code-sub">Your 6-character code was assigned by the Director.<br>Contact them if you haven't received it.</p>
+      
+      <div class="otp-row" id="otpRow">
+        <div class="otp-cell" id="cell0"></div>
+        <div class="otp-cell" id="cell1"></div>
+        <div class="otp-cell" id="cell2"></div>
+        <div class="otp-cell" id="cell3"></div>
+        <div class="otp-cell" id="cell4"></div>
+        <div class="otp-cell" id="cell5"></div>
+      </div>
+      <input type="text" id="hiddenInput" maxlength="6" autocomplete="off" style="position:absolute;opacity:0;width:1px;height:1px" />
+      
+      <div class="attempts-dots" id="attemptDots">
+        <div class="dot" id="d0"></div>
+        <div class="dot" id="d1"></div>
+        <div class="dot" id="d2"></div>
+      </div>
+      
+      <div class="code-error" id="codeError"></div>
+      <div class="code-lockout" id="codeLockout" style="display:none"></div>
+      
+      <button class="btn-gold" style="width:100%" onclick="verifyCode()" id="verifyBtn">Verify Code</button>
+      <br><br>
+      <button class="btn-outline" onclick="goTo('roleselect')">← Change Role</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 4: LOGIN ══════ -->
+<div class="screen" id="loginscreen">
+  <div class="screen-header">
+    <div class="screen-header-logo">Sohima Production</div>
+    <div class="text-muted" style="font-size:13px;font-weight:300">Step 3 of 3</div>
+  </div>
+  <div class="login-body">
+    <div class="login-box">
+      <h2>Sign In</h2>
+      <p>Access your workspace with your registered email and password.</p>
+      <div class="form-field">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="emailInput" placeholder="name@sohima.com" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Password</label>
+        <div class="pw-wrap">
+          <input type="password" class="form-input" id="pwInput" placeholder="••••••••" style="padding-right:60px" />
+          <button class="pw-toggle" onclick="togglePw()" id="pwToggleBtn">Show</button>
+        </div>
+      </div>
+      <div style="margin-bottom:12px;font-size:12px;color:var(--muted);font-weight:300">
+        Demo: use any email & password to enter
+      </div>
+      <button class="btn-gold" style="width:100%;padding:16px" onclick="doLogin()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 5: DASHBOARD ══════ -->
+<div class="screen" id="dashboard">
+  <div class="dash-header">
+    <div class="dash-logo">Sohima Production</div>
+    <div class="dash-user">
+      <div class="dash-role-pill" id="headerRolePill">Director</div>
+      <div class="avatar" id="headerAvatar">AR</div>
+    </div>
+  </div>
+  <div class="dash-body">
+    <!-- SIDEBAR -->
+    <nav class="dash-sidebar">
+      <div class="nav-item active" onclick="switchNav('home',this)" id="navHome">
+        <span class="nav-icon">⌂</span> Home
+      </div>
+      <div class="nav-item" onclick="switchNav('projects',this)" id="navProjects">
+        <span class="nav-icon">◈</span> <span id="projectsNavLabel">Projects</span>
+      </div>
+      <div class="nav-item" onclick="switchNav('team',this)" id="navTeam">
+        <span class="nav-icon">◉</span> Team
+      </div>
+      <div class="nav-item" onclick="switchNav('profile',this)" id="navProfile">
+        <span class="nav-icon">◎</span> Profile
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="dash-main">
+
+      <!-- HOME TAB -->
+      <div class="tab-view active" id="tab-home">
+        <div class="welcome-line">Welcome back, <span id="welcomeName">Arjun</span></div>
+        <div class="welcome-sub" id="welcomeSub">Here's what's happening at Sohima Production today.</div>
+        <div class="stat-cards" id="statCards">
+          <div class="stat-card"><div class="stat-num" id="statActive">4</div><div class="stat-label">Active Projects</div></div>
+          <div class="stat-card"><div class="stat-num" id="statTeam">8</div><div class="stat-label">Team Members</div></div>
+          <div class="stat-card"><div class="stat-num" id="statDone">6</div><div class="stat-label">Completed</div></div>
+        </div>
+        <div class="section-title">Recent Activity</div>
+        <div class="activity-feed" id="activityFeed">
+          <div class="activity-item"><div><div class="activity-msg"><strong>Priya Sharma</strong> marked <em>Chapter 5 Narration</em> as Done in <strong>Echoes of Silence</strong></div></div><div class="activity-time">2 mins ago</div></div>
+          <div class="activity-item"><div><div class="activity-msg"><strong>Rohan Das</strong> joined the team as Editor</div></div><div class="activity-time">1 hour ago</div></div>
+          <div class="activity-item"><div><div class="activity-msg">Project <strong>The Lost Cartographer</strong> moved to <span style="color:#5CB85C">Completed</span></div></div><div class="activity-time">Yesterday</div></div>
+          <div class="activity-item"><div><div class="activity-msg"><strong>Ananya Roy</strong> updated <em>Script Draft v2</em> in <strong>Whispers of Bengal</strong></div></div><div class="activity-time">2 hours ago</div></div>
+          <div class="activity-item"><div><div class="activity-msg"><strong>Kabir Mehta</strong> started <em>Animation Storyboard</em> in <strong>Durga's Odyssey</strong></div></div><div class="activity-time">3 hours ago</div></div>
+        </div>
+      </div>
+
+      <!-- PROJECTS TAB -->
+      <div class="tab-view" id="tab-projects">
+        <div id="directorAddBtn" style="display:none">
+          <button class="add-project-btn" onclick="openAddProject()">+ &nbsp; New Project</button>
+        </div>
+        <div class="filter-tabs">
+          <div class="filter-tab active" onclick="filterProjects('all',this)">All</div>
+          <div class="filter-tab" onclick="filterProjects('completed',this)">Completed ✓</div>
+          <div class="filter-tab" onclick="filterProjects('in_progress',this)">In Progress ⏳</div>
+          <div class="filter-tab" onclick="filterProjects('upcoming',this)">Upcoming 📅</div>
+        </div>
+        <div class="project-grid" id="projectGrid"></div>
+      </div>
+
+      <!-- TEAM TAB -->
+      <div class="tab-view" id="tab-team">
+        <div id="directorAddMemberBtn" style="display:none">
+          <button class="add-member-btn" onclick="openAddMember()">+ &nbsp; Add Team Member</button>
+        </div>
+        <div class="team-list" id="teamList"></div>
+      </div>
+
+      <!-- PROFILE TAB -->
+      <div class="tab-view" id="tab-profile">
+        <div class="profile-card">
+          <div class="profile-avatar-big" id="profileAvatar">AR</div>
+          <div class="profile-name" id="profileName">Arjun Rao</div>
+          <div class="profile-meta" id="profileMeta">Director · Member since June 2024</div>
+          <div class="profile-row"><div class="profile-key">Email</div><div class="profile-val" id="profileEmail">arjun@sohima.com</div></div>
+          <div class="profile-row"><div class="profile-key">Role</div><div class="profile-val" id="profileRole">Director</div></div>
+          <div class="profile-row"><div class="profile-key">Active Projects</div><div class="profile-val" id="profileProjects">4</div></div>
+          <div class="profile-row"><div class="profile-key">FCM Token</div><div class="profile-val" style="color:var(--muted);font-size:12px">d8f3a...c92e1</div></div>
+          <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══════ MODALS ══════ -->
+
+<!-- Add Project -->
+<div class="modal-overlay" id="addProjectModal">
+  <div class="modal">
+    <div class="modal-title">
+      New Project
+      <button class="modal-close" onclick="closeModal('addProjectModal')">×</button>
+    </div>
+    <div class="form-row"><label>Project Title</label><input type="text" id="newProjTitle" placeholder="e.g. Echoes of Silence" /></div>
+    <div class="form-row"><label>Type</label>
+      <select id="newProjType"><option value="Book">Book</option><option value="Audiobook">Audiobook</option><option value="Animation">Animation</option></select>
+    </div>
+    <div class="form-row"><label>Status</label>
+      <select id="newProjStatus"><option value="upcoming">Upcoming</option><option value="in_progress">In Progress</option><option value="completed">Completed</option></select>
+    </div>
+    <div class="form-row"><label>Deadline</label><input type="date" id="newProjDeadline" /></div>
+    <div class="form-row"><label>Description</label><textarea id="newProjDesc" placeholder="Brief project description…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('addProjectModal')">Cancel</button>
+      <button class="btn-gold" onclick="createProject()">Create Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Member -->
+<div class="modal-overlay" id="addMemberModal">
+  <div class="modal">
+    <div class="modal-title">
+      Add Team Member
+      <button class="modal-close" onclick="closeModal('addMemberModal')">×</button>
+    </div>
+    <div class="form-row"><label>Full Name</label><input type="text" id="newMemberName" placeholder="e.g. Priya Sharma" /></div>
+    <div class="form-row"><label>Email Address</label><input type="email" id="newMemberEmail" placeholder="priya@sohima.com" /></div>
+    <div class="form-row"><label>Role</label>
+      <select id="newMemberRole">
+        <option value="author">Author / Writer</option>
+        <option value="editor">Editor / Animator</option>
+        <option value="narrator">Narrator / Voice</option>
+        <option value="producer">Producer</option>
+      </select>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-top:16px;font-weight:300">A Firebase invitation will be sent to the provided email address with their access code.</div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('addMemberModal')">Cancel</button>
+      <button class="btn-gold" onclick="createMember()">Send Invite</button>
+    </div>
+  </div>
+</div>
+
+<!-- Project Detail -->
+<div class="modal-overlay" id="projectDetailModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-title">
+      Project Details
+      <button class="modal-close" onclick="closeModal('projectDetailModal')">×</button>
+    </div>
+    <div id="projectDetailBody"></div>
+  </div>
+</div>
+
+<script>
+// ══════ STATE ══════
+const CODES = {director:'1947SP',author:'2211WR',editor:'3302EA',narrator:'4413NA',producer:'5524PR'};
+const ROLE_LABELS = {director:'Director',author:'Author / Writer',editor:'Editor / Animator',narrator:'Narrator / Voice',producer:'Producer'};
+const ROLE_ICONS = {director:'🎬',author:'✍️',editor:'🎨',narrator:'🎙',producer:'📦'};
+const AVATAR_COLORS = ['#C9A84C','#1D9E75','#D85A30','#7F77DD','#5A8FE8'];
+
+let state = {
+  selectedRole: null,
+  currentUser: null,
+  activeTab: 'home',
+  codeAttempts: 0,
+  locked: false,
+  filterStatus: 'all',
+  projects: [],
+  team: [],
+};
+
+// Sample data
+const SAMPLE_PROJECTS = [
+  {id:'p1',title:'Echoes of Silence',type:'Audiobook',status:'in_progress',deadline:'2025-09-30',desc:'A haunting audiobook adaptation of the bestselling novel, featuring ambient soundscapes and full voice cast.',members:['m1','m2','m3'],progress:62,tasks:[{id:'t1',title:'Chapter 1-5 Narration',assignedTo:'m2',status:'done'},{id:'t2',title:'Sound Design Layer',assignedTo:'m3',status:'in_progress'},{id:'t3',title:'Final Mix & Master',assignedTo:'m1',status:'not_started'}]},
+  {id:'p2',title:'Whispers of Bengal',type:'Book',status:'in_progress',deadline:'2025-08-15',desc:'A literary fiction collection exploring rural Bengal through magical realism.',members:['m1','m4'],progress:38,tasks:[{id:'t4',title:'Script Draft v2',assignedTo:'m4',status:'in_progress'},{id:'t5',title:'Editorial Review',assignedTo:'m1',status:'not_started'}]},
+  {id:'p3',title:'The Lost Cartographer',type:'Animation',status:'completed',deadline:'2025-06-01',desc:'A 12-episode animated series about a mapmaker who discovers portals hidden in ancient charts.',members:['m1','m3','m5'],progress:100,tasks:[{id:'t6',title:'Episode 1-6 Animation',assignedTo:'m3',status:'done'},{id:'t7',title:'Voice Recording',assignedTo:'m5',status:'done'}]},
+  {id:'p4',title:"Durga's Odyssey",type:'Animation',status:'upcoming',deadline:'2026-01-20',desc:'A mythological animated feature film reimagining the story of Goddess Durga for modern audiences.',members:['m3','m5'],progress:8,tasks:[{id:'t8',title:'Storyboard',assignedTo:'m3',status:'in_progress'},{id:'t9',title:'Voice Direction',assignedTo:'m5',status:'not_started'}]},
+  {id:'p5',title:'The Ink Republic',type:'Book',status:'completed',deadline:'2025-04-10',desc:'A political thriller novel set in a near-future India where journalists control the government.',members:['m1','m2','m4'],progress:100,tasks:[{id:'t10',title:'Final Manuscript',assignedTo:'m4',status:'done'}]},
+  {id:'p6',title:'Monsoon Frequencies',type:'Audiobook',status:'upcoming',deadline:'2026-03-31',desc:'An experimental audiobook blending poetry, field recordings, and original music.',members:['m2','m5'],progress:5,tasks:[{id:'t11',title:'Concept & Script',assignedTo:'m4',status:'not_started'},{id:'t12',title:'Voice Casting',assignedTo:'m2',status:'not_started'}]},
+];
+
+const SAMPLE_TEAM = [
+  {id:'m1',name:'Arjun Rao',email:'arjun@sohima.com',role:'director',online:true,projects:4},
+  {id:'m2',name:'Priya Sharma',email:'priya@sohima.com',role:'narrator',online:true,projects:3},
+  {id:'m3',name:'Kabir Mehta',email:'kabir@sohima.com',role:'editor',online:false,projects:3},
+  {id:'m4',name:'Ananya Roy',email:'ananya@sohima.com',role:'author',online:true,projects:2},
+  {id:'m5',name:'Dev Bose',email:'dev@sohima.com',role:'producer',online:false,projects:2},
+  {id:'m6',name:'Ritika Sen',email:'ritika@sohima.com',role:'author',online:true,projects:1},
+  {id:'m7',name:'Mihir Nair',email:'mihir@sohima.com',role:'editor',online:false,projects:0},
+  {id:'m8',name:'Swati Das',email:'swati@sohima.com',role:'narrator',online:true,projects:2},
+];
+
+state.projects = SAMPLE_PROJECTS;
+state.team = SAMPLE_TEAM;
+
+// ══════ NAVIGATION ══════
+function goTo(screenId){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  if(screenId==='codeentry') initCodeEntry();
+}
+
+// ══════ ROLE SELECTION ══════
+function selectRole(card){
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  state.selectedRole = card.dataset.role;
+  document.getElementById('roleContBtn').disabled = false;
+  document.getElementById('roleSelMsg').textContent = ROLE_ICONS[state.selectedRole]+' '+ROLE_LABELS[state.selectedRole]+' selected';
+}
+
+// ══════ CODE ENTRY ══════
+let codeValue = '';
+function initCodeEntry(){
+  codeValue=''; state.codeAttempts=0; state.locked=false;
+  document.getElementById('codeBadge').innerHTML = ROLE_ICONS[state.selectedRole]+'&nbsp;&nbsp;'+ROLE_LABELS[state.selectedRole];
+  document.getElementById('codeError').textContent='';
+  document.getElementById('codeLockout').style.display='none';
+  document.getElementById('verifyBtn').disabled=false;
+  updateOTP('');
+  document.querySelectorAll('.dot').forEach(d=>d.classList.remove('used'));
+  setTimeout(()=>document.getElementById('hiddenInput').focus(),100);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp = document.getElementById('hiddenInput');
+  if(inp){
+    inp.addEventListener('input',e=>{
+      codeValue = e.target.value.toUpperCase().slice(0,6);
+      e.target.value = codeValue;
+      updateOTP(codeValue);
+    });
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')verifyCode();});
+  }
+  document.getElementById('otpRow').addEventListener('click',()=>document.getElementById('hiddenInput').focus());
+});
+
+function updateOTP(val){
+  for(let i=0;i<6;i++){
+    const c=document.getElementById('cell'+i);
+    c.textContent = val[i]?'•':'';
+    c.classList.toggle('filled', !!val[i]);
+    c.classList.toggle('active', i===val.length && i<6);
+  }
+}
+
+function verifyCode(){
+  if(state.locked) return;
+  const correct = CODES[state.selectedRole];
+  if(codeValue === correct){
+    document.getElementById('codeError').textContent='';
+    goTo('loginscreen');
+  } else {
+    state.codeAttempts++;
+    if(state.codeAttempts<3){
+      document.getElementById('d'+(state.codeAttempts-1)).classList.add('used');
+      document.getElementById('codeError').textContent='Invalid code for this role. Please check with your Director.';
+      codeValue=''; document.getElementById('hiddenInput').value='';
+      updateOTP('');
+    } else {
+      document.getElementById('d2').classList.add('used');
+      lockout();
+    }
+  }
+}
+
+function lockout(){
+  state.locked=true;
+  document.getElementById('verifyBtn').disabled=true;
+  document.getElementById('codeError').textContent='Too many attempts.';
+  let t=60;
+  const el=document.getElementById('codeLockout');
+  el.style.display='block';
+  el.textContent=`Account locked. Try again in ${t}s`;
+  const iv=setInterval(()=>{
+    t--;
+    el.textContent=`Account locked. Try again in ${t}s`;
+    if(t<=0){clearInterval(iv);state.locked=false;state.codeAttempts=0;el.style.display='none';document.getElementById('verifyBtn').disabled=false;document.getElementById('codeError').textContent='';document.querySelectorAll('.dot').forEach(d=>d.classList.remove('used'));codeValue='';document.getElementById('hiddenInput').value='';updateOTP('');}
+  },1000);
+}
+
+// ══════ LOGIN ══════
+function togglePw(){
+  const inp=document.getElementById('pwInput');
+  const btn=document.getElementById('pwToggleBtn');
+  if(inp.type==='password'){inp.type='text';btn.textContent='Hide';}
+  else{inp.type='password';btn.textContent='Show';}
+}
+
+function doLogin(){
+  const email=document.getElementById('emailInput').value.trim()||'arjun@sohima.com';
+  const role=state.selectedRole||'director';
+  const nameParts = email.split('@')[0].split('.');
+  const name = nameParts.map(p=>p[0].toUpperCase()+p.slice(1)).join(' ');
+  state.currentUser={name,email,role,initials:name.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase()};
+  setupDashboard();
+  goTo('dashboard');
+}
+
+// ══════ DASHBOARD SETUP ══════
+function setupDashboard(){
+  const u=state.currentUser;
+  document.getElementById('welcomeName').textContent=u.name.split(' ')[0];
+  document.getElementById('headerAvatar').textContent=u.initials;
+  document.getElementById('profileAvatar').textContent=u.initials;
+  document.getElementById('profileName').textContent=u.name;
+  document.getElementById('profileEmail').textContent=u.email;
+  document.getElementById('profileRole').textContent=ROLE_LABELS[u.role];
+  document.getElementById('profileMeta').textContent=ROLE_LABELS[u.role]+' · Member since June 2024';
+  document.getElementById('headerRolePill').textContent=ROLE_LABELS[u.role];
+
+  const isDir = u.role==='director';
+  document.getElementById('projectsNavLabel').textContent = isDir?'Projects':'My Projects';
+  document.getElementById('directorAddBtn').style.display = isDir?'block':'none';
+  document.getElementById('directorAddMemberBtn').style.display = isDir?'block':'none';
+
+  if(!isDir){
+    document.getElementById('welcomeSub').textContent='Here are your assigned projects at Sohima Production.';
+    document.getElementById('statCards').innerHTML=`
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">My Projects</div></div>
+      <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">In Progress</div></div>
+      <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">Completed</div></div>`;
+  }
+
+  renderProjects('all');
+  renderTeam();
+  switchNav('home',document.getElementById('navHome'));
+}
+
+// ══════ PROJECTS ══════
+function filterProjects(status, tab){
+  state.filterStatus=status;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  renderProjects(status);
+}
+
+function renderProjects(filter){
+  const isDir = state.currentUser?.role==='director';
+  let projs = state.projects;
+  if(!isDir) projs = projs.filter(p=>p.members.includes('m2')); // simulate member view
+  if(filter!=='all') projs = projs.filter(p=>p.status===filter);
+
+  const grid=document.getElementById('projectGrid');
+  grid.innerHTML=projs.map(p=>{
+    const teamMembers = p.members.slice(0,4).map((mid,i)=>{
+      const m=state.team.find(t=>t.id===mid);
+      const colors=['#C9A84C','#1D9E75','#D85A30','#7F77DD','#5A8FE8'];
+      return `<div class="member-av" style="background:${colors[i%colors.length]};color:#080808">${m?m.name.split(' ').map(x=>x[0]).join(''):'?'}</div>`;
+    }).join('');
+    const statusLabel={completed:'Completed',in_progress:'In Progress',upcoming:'Upcoming'}[p.status];
+    const dl=new Date(p.deadline).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    return `<div class="project-card" onclick="openProjectDetail('${p.id}')">
+      <div class="project-card-top">
+        <div class="project-title">${p.title}</div>
+        <div class="type-badge">${p.type}</div>
+      </div>
+      <div class="status-pill ${p.status}">${statusLabel}</div>
+      <div class="member-stack">${teamMembers}</div>
+      <div class="progress-track"><div class="progress-fill" style="width:${p.progress}%"></div></div>
+      <div class="project-meta"><span>${p.progress}% complete</span><span>📅 ${dl}</span></div>
+    </div>`;
+  }).join('');
+  if(!projs.length) grid.innerHTML='<div style="color:var(--muted);font-size:14px;font-weight:300;padding:40px 0">No projects in this category.</div>';
+}
+
+function openProjectDetail(id){
+  const p=state.projects.find(x=>x.id===id);
+  if(!p) return;
+  const isDir=state.currentUser?.role==='director';
+  const dl=new Date(p.deadline).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  const tasksHTML=p.tasks.map(t=>{
+    const m=state.team.find(x=>x.id===t.assignedTo);
+    const nextStatus={not_started:'in_progress',in_progress:'done',done:'not_started'};
+    const nextLabel={not_started:'Start',in_progress:'Mark Done',done:'Reopen'};
+    return `<div class="task-item">
+      <div class="task-status-dot ${t.status}"></div>
+      <div class="task-name">${t.title}</div>
+      <div class="task-owner">${m?m.name.split(' ')[0]:'Unassigned'}</div>
+      <button class="task-status-btn" onclick="cycleTaskStatus('${id}','${t.id}','${nextStatus[t.status]}')">${nextLabel[t.status]}</button>
+    </div>`;
+  }).join('');
+  const editBtn = isDir?`<button class="btn-gold" onclick="closeModal('projectDetailModal')">Done</button>`:'<button class="btn-outline" onclick="closeModal(\'projectDetailModal\')">Close</button>';
+  document.getElementById('projectDetailBody').innerHTML=`
+    <div class="proj-detail-header">
+      <div class="proj-detail-type">${p.type}</div>
+      <div class="proj-detail-title">${p.title}</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
+        <span class="status-pill ${p.status}">${{completed:'Completed',in_progress:'In Progress',upcoming:'Upcoming'}[p.status]}</span>
+        <span style="font-size:13px;color:var(--muted)">Due: ${dl}</span>
+      </div>
+      <div class="proj-detail-desc">${p.desc}</div>
+    </div>
+    <div class="section-title" style="font-size:18px">Tasks</div>
+    <div class="task-list">${tasksHTML}</div>
+    <div style="margin-top:28px;display:flex;gap:12px;justify-content:flex-end">
+      ${isDir?`<button class="btn-outline" style="color:#E24B4A;border-color:#E24B4A" onclick="deleteProject('${id}')">Delete</button>`:''}
+      ${editBtn}
+    </div>`;
+  document.getElementById('projectDetailModal').classList.add('open');
+}
+
+function cycleTaskStatus(projId, taskId, newStatus){
+  const p=state.projects.find(x=>x.id===projId);
+  const t=p?.tasks.find(x=>x.id===taskId);
+  if(t){t.status=newStatus;}
+  const completedTasks=p.tasks.filter(x=>x.status==='done').length;
+  p.progress=Math.round((completedTasks/p.tasks.length)*100);
+  showToast(`✅ Task updated — ${newStatus.replace('_',' ')}`);
+  openProjectDetail(projId);
+  renderProjects(state.filterStatus);
+}
+
+function deleteProject(id){
+  state.projects=state.projects.filter(p=>p.id!==id);
+  closeModal('projectDetailModal');
+  renderProjects(state.filterStatus);
+  showToast('🗑️ Project deleted');
+}
+
+function openAddProject(){document.getElementById('addProjectModal').classList.add('open');}
+function createProject(){
+  const title=document.getElementById('newProjTitle').value.trim();
+  if(!title){alert('Please enter a project title');return;}
+  const newP={
+    id:'p'+Date.now(),
+    title,
+    type:document.getElementById('newProjType').value,
+    status:document.getElementById('newProjStatus').value,
+    deadline:document.getElementById('newProjDeadline').value||'2026-12-31',
+    desc:document.getElementById('newProjDesc').value||'No description provided.',
+    members:['m1'],progress:0,tasks:[]
+  };
+  state.projects.unshift(newP);
+  renderProjects(state.filterStatus);
+  closeModal('addProjectModal');
+  showToast(`📌 "${title}" created successfully`);
+  document.getElementById('newProjTitle').value='';
+  document.getElementById('newProjDesc').value='';
+}
+
+// ══════ TEAM ══════
+function renderTeam(){
+  const isDir=state.currentUser?.role==='director';
+  document.getElementById('teamList').innerHTML=state.team.map(m=>{
+    const badge=`<span class="tm-role-badge ${m.role}">${ROLE_LABELS[m.role]}</span>`;
+    const removeBtn=isDir&&m.role!=='director'?`<button class="icon-btn" onclick="removeMember('${m.id}')">Remove</button>`:'';
+    return `<div class="team-member" id="tm-${m.id}">
+      <div class="online-dot ${m.online?'online':'offline'}"></div>
+      <div class="avatar" style="width:44px;height:44px;font-size:16px;background:${m.role==='director'?'#C9A84C':m.role==='editor'?'#1D9E75':m.role==='narrator'?'#D85A30':m.role==='author'?'#7F77DD':'#5A8FE8'};color:#080808">${m.name.split(' ').map(x=>x[0]).join('')}</div>
+      <div class="tm-info">
+        <div class="tm-name">${m.name} ${badge}</div>
+        <div class="tm-email">${m.email}</div>
+        <div class="tm-projects" style="margin-top:4px">${m.projects} active project${m.projects!==1?'s':''}</div>
+      </div>
+      <div class="tm-actions">${removeBtn}</div>
+    </div>`;
+  }).join('');
+}
+
+function removeMember(id){
+  if(!confirm('Remove this team member?')) return;
+  state.team=state.team.filter(m=>m.id!==id);
+  renderTeam();
+  showToast('Member removed from team');
+}
+
+function openAddMember(){document.getElementById('addMemberModal').classList.add('open');}
+function createMember(){
+  const name=document.getElementById('newMemberName').value.trim();
+  const email=document.getElementById('newMemberEmail').value.trim();
+  const role=document.getElementById('newMemberRole').value;
+  if(!name||!email){alert('Please fill in all fields');return;}
+  state.team.push({id:'m'+Date.now(),name,email,role,online:false,projects:0});
+  renderTeam();
+  closeModal('addMemberModal');
+  showToast(`✉️ Invite sent to ${name}`);
+  document.getElementById('newMemberName').value='';
+  document.getElementById('newMemberEmail').value='';
+}
+
+// ══════ MODALS ══════
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});
+});
+
+// ══════ NAV ══════
+function switchNav(tab, el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-view').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  state.activeTab=tab;
+  if(tab==='projects') renderProjects(state.filterStatus);
+  if(tab==='team') renderTeam();
+}
+
+// ══════ TOAST ══════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ══════ LOGOUT ══════
+function doLogout(){state.currentUser=null;state.selectedRole=null;goTo('splash');}
+</script>
+</body>
+</html>
