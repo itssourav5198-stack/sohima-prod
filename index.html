@@ -400,7 +400,7 @@ h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;letter-spacing:.02em}
 
       <!-- HOME TAB -->
       <div class="tab-view active" id="tab-home">
-        <div class="welcome-line">Welcome back, <span id="welcomeName">Arjun</span></div>
+        <div class="welcome-line">Welcome back, <span id="welcomeName">Sourav</span></div>
         <div class="welcome-sub" id="welcomeSub">Here's what's happening at Sohima Production today.</div>
         <div class="stat-cards" id="statCards">
           <div class="stat-card"><div class="stat-num" id="statActive">4</div><div class="stat-label">Active Projects</div></div>
@@ -443,11 +443,11 @@ h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;letter-spacing:.02em}
       <div class="tab-view" id="tab-profile">
         <div class="profile-card">
           <div class="profile-avatar-big" id="profileAvatar">AR</div>
-          <div class="profile-name" id="profileName">Arjun Rao</div>
-          <div class="profile-meta" id="profileMeta">Director · Member since June 2024</div>
-          <div class="profile-row"><div class="profile-key">Email</div><div class="profile-val" id="profileEmail">arjun@sohima.com</div></div>
+          <div class="profile-name" id="profileName">Sourav Maity</div>
+          <div class="profile-meta" id="profileMeta">Director · Member since Jan 2026</div>
+          <div class="profile-row"><div class="profile-key">Email</div><div class="profile-val" id="profileEmail">sohimaproduction@sohima.com</div></div>
           <div class="profile-row"><div class="profile-key">Role</div><div class="profile-val" id="profileRole">Director</div></div>
-          <div class="profile-row"><div class="profile-key">Active Projects</div><div class="profile-val" id="profileProjects">4</div></div>
+          <div class="profile-row"><div class="profile-key">Active Projects</div><div class="profile-val" id="profileProjects">1</div></div>
           <div class="profile-row"><div class="profile-key">FCM Token</div><div class="profile-val" style="color:var(--muted);font-size:12px">d8f3a...c92e1</div></div>
           <button class="logout-btn" onclick="doLogout()">Sign Out</button>
         </div>
@@ -541,20 +541,12 @@ const SAMPLE_PROJECTS = [
   {id:'p1',title:'Echoes of Silence',type:'Audiobook',status:'in_progress',deadline:'2025-09-30',desc:'A haunting audiobook adaptation of the bestselling novel, featuring ambient soundscapes and full voice cast.',members:['m1','m2','m3'],progress:62,tasks:[{id:'t1',title:'Chapter 1-5 Narration',assignedTo:'m2',status:'done'},{id:'t2',title:'Sound Design Layer',assignedTo:'m3',status:'in_progress'},{id:'t3',title:'Final Mix & Master',assignedTo:'m1',status:'not_started'}]},
   {id:'p2',title:'Whispers of Bengal',type:'Book',status:'in_progress',deadline:'2025-08-15',desc:'A literary fiction collection exploring rural Bengal through magical realism.',members:['m1','m4'],progress:38,tasks:[{id:'t4',title:'Script Draft v2',assignedTo:'m4',status:'in_progress'},{id:'t5',title:'Editorial Review',assignedTo:'m1',status:'not_started'}]},
   {id:'p3',title:'The Lost Cartographer',type:'Animation',status:'completed',deadline:'2025-06-01',desc:'A 12-episode animated series about a mapmaker who discovers portals hidden in ancient charts.',members:['m1','m3','m5'],progress:100,tasks:[{id:'t6',title:'Episode 1-6 Animation',assignedTo:'m3',status:'done'},{id:'t7',title:'Voice Recording',assignedTo:'m5',status:'done'}]},
-  {id:'p4',title:"Durga's Odyssey",type:'Animation',status:'upcoming',deadline:'2026-01-20',desc:'A mythological animated feature film reimagining the story of Goddess Durga for modern audiences.',members:['m3','m5'],progress:8,tasks:[{id:'t8',title:'Storyboard',assignedTo:'m3',status:'in_progress'},{id:'t9',title:'Voice Direction',assignedTo:'m5',status:'not_started'}]},
-  {id:'p5',title:'The Ink Republic',type:'Book',status:'completed',deadline:'2025-04-10',desc:'A political thriller novel set in a near-future India where journalists control the government.',members:['m1','m2','m4'],progress:100,tasks:[{id:'t10',title:'Final Manuscript',assignedTo:'m4',status:'done'}]},
-  {id:'p6',title:'Monsoon Frequencies',type:'Audiobook',status:'upcoming',deadline:'2026-03-31',desc:'An experimental audiobook blending poetry, field recordings, and original music.',members:['m2','m5'],progress:5,tasks:[{id:'t11',title:'Concept & Script',assignedTo:'m4',status:'not_started'},{id:'t12',title:'Voice Casting',assignedTo:'m2',status:'not_started'}]},
 ];
 
 const SAMPLE_TEAM = [
-  {id:'m1',name:'Arjun Rao',email:'arjun@sohima.com',role:'director',online:true,projects:4},
-  {id:'m2',name:'Priya Sharma',email:'priya@sohima.com',role:'narrator',online:true,projects:3},
-  {id:'m3',name:'Kabir Mehta',email:'kabir@sohima.com',role:'editor',online:false,projects:3},
-  {id:'m4',name:'Ananya Roy',email:'ananya@sohima.com',role:'author',online:true,projects:2},
-  {id:'m5',name:'Dev Bose',email:'dev@sohima.com',role:'producer',online:false,projects:2},
-  {id:'m6',name:'Ritika Sen',email:'ritika@sohima.com',role:'author',online:true,projects:1},
-  {id:'m7',name:'Mihir Nair',email:'mihir@sohima.com',role:'editor',online:false,projects:0},
-  {id:'m8',name:'Swati Das',email:'swati@sohima.com',role:'narrator',online:true,projects:2},
+  {id:'m1',name:'Sourav Maity',email:'sohimaproduction@gmail.com',role:'director',online:true,projects:4},
+  {id:'m2',name:'Mohima Shuklabaidya',email:'sohima0309@gmail.com',role:'co-director',online:true,projects:3},
+  {id:'m3',name:'Himanshu Yadav',email:'himanshu.9555480@gmail.com',role:'editor',online:false,projects:3},
 ];
 
 state.projects = SAMPLE_PROJECTS;
