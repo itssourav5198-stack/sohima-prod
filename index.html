@@ -2160,53 +2160,79 @@
       const p = S.projects.find(x => x.id === id); if (!p) return;
       const isDir = S.currentUser?.role === 'director';
       const dl = p.deadline ? new Date(p.deadline).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-
-      // member select options for assignment
       const memberOpts = S.team.map(m => `<option value="${m.id}">${m.name} (${ROLE_LABELS[m.role]})</option>`).join('');
 
+      const nextTaskStatus = { not_started: 'in_progress', in_progress: 'done', done: 'not_started' };
+      const taskBtnLabel = { not_started: 'START', in_progress: 'MARK DONE', done: 'REOPEN' };
+      const taskBtnColor = { not_started: 'var(--gold)', in_progress: 'var(--green)', done: 'var(--muted)' };
+
       const tasksHTML = p.tasks.length ? p.tasks.map(t => {
-        const nextStatus = { not_started: 'in_progress', in_progress: 'done', done: 'not_started' };
-        const nextLabel = { not_started: 'Start', in_progress: 'Mark Done', done: 'Reopen' };
-        const assigneeName = getMemberName(t.assignedTo);
-        // Director sees a dropdown to reassign; members see static assignee name
         const assigneeCell = isDir
-          ? `<select class="dir-task-assign-select" onchange="reassignTask('${id}','${t.id}',this.value)" title="Reassign task">${S.team.map(m => `<option value="${m.id}"${m.id === t.assignedTo ? ' selected' : ''}>${m.name}</option>`).join('')}</select>`
-          : `<span class="task-assignee">${assigneeName.split(' ')[0]}</span>`;
+          ? `<select class="dir-task-assign-select" onchange="reassignTask('${id}','${t.id}',this.value)">${S.team.map(m => `<option value="${m.id}"${m.id === t.assignedTo ? ' selected' : ''}>${m.name}</option>`).join('')}</select>`
+          : `<span class="task-assignee">${getMemberName(t.assignedTo).split(' ')[0]}</span>`;
         return `<div class="task-item" id="taskrow-${t.id}">
       <div class="task-status-dot ${t.status}"></div>
-      <div class="task-name">${t.title}</div>
+      <div class="task-name" style="${t.status === 'done' ? 'text-decoration:line-through;color:var(--muted)' : ''}">${t.title}</div>
       ${assigneeCell}
-      <button class="task-cycle-btn" onclick="cycleTask('${id}','${t.id}','${nextStatus[t.status]}')">${nextLabel[t.status]}</button>
+      <button class="task-cycle-btn"
+        style="border-color:${taskBtnColor[t.status]};color:${taskBtnColor[t.status]}"
+        onclick="cycleTask('${id}','${t.id}','${nextTaskStatus[t.status]}')">
+        ${taskBtnLabel[t.status]}
+      </button>
     </div>`;
       }).join('') : `<div class="no-tasks">No tasks added yet.</div>`;
 
-      // Director-only add task row inside detail
+      // Project status changer (Director only)
+      const nextProjStatus = { upcoming: 'in_progress', in_progress: 'completed', completed: 'upcoming' };
+      const projStatusBtn = { upcoming: '▶ Start Project', in_progress: '✓ Mark Completed', completed: '↺ Reopen' };
+      const projStatusColor = { upcoming: 'var(--blue)', in_progress: 'var(--green)', completed: 'var(--muted)' };
+
+      const projStatusChanger = isDir ? `
+    <button onclick="changeProjectStatus('${id}')"
+      style="padding:8px 18px;border:1px solid ${projStatusColor[p.status]};color:${projStatusColor[p.status]};background:none;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">
+      ${projStatusBtn[p.status]}
+    </button>` : '';
+
       const addTaskInDetail = isDir ? `<div style="margin-top:14px;display:flex;gap:8px">
     <input type="text" id="inlineTaskName" placeholder="Task name…" style="flex:1;background:var(--s2);border:none;border-bottom:1px solid var(--border);padding:8px 0;font-size:13px;color:var(--cream);font-family:'Jost',sans-serif;outline:none"/>
     <select id="inlineTaskAssignee" style="background:var(--s2);border:1px solid var(--border);color:var(--cream);padding:6px 8px;font-size:12px;font-family:'Jost',sans-serif">${memberOpts}</select>
     <button class="btn-gold" style="padding:8px 16px;font-size:12px" onclick="addTaskToProject('${id}')">Add</button>
-  </div>`: '';
+  </div>` : '';
 
-      const directorActions = isDir ? `<button class="btn-danger" onclick="deleteProject('${id}')">Delete Project</button>` : '';
+      const doneTasks = p.tasks.filter(t => t.status === 'done').length;
+      const totalTasks = p.tasks.length;
 
       document.getElementById('projectDetailBody').innerHTML = `
     <div class="proj-detail-header">
       <div class="proj-detail-type">${p.type}</div>
       <div class="proj-detail-title">${p.title}</div>
-      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
         <span class="status-pill ${p.status}">${{ completed: 'Completed', in_progress: 'In Progress', upcoming: 'Upcoming' }[p.status]}</span>
         <span style="font-size:13px;color:var(--muted)">Due ${dl}</span>
+        ${projStatusChanger}
       </div>
       <div class="proj-detail-desc">${p.desc}</div>
     </div>
+
+    ${totalTasks ? `
+    <div style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px">
+        <span>Overall Progress</span>
+        <span>${p.progress}%</span>
+      </div>
+      <div class="progress-track" style="height:6px">
+        <div class="progress-fill" style="width:${p.progress}%"></div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${doneTasks} of ${totalTasks} tasks completed</div>
+    </div>` : ''}
+
     <div class="task-section-title">
-      <span>Tasks ${p.tasks.length ? `<span style="font-size:14px;color:var(--muted);font-weight:300">(${p.tasks.filter(t => t.status === 'done').length}/${p.tasks.length} done)</span>` : ''}
-      </span>
+      <span>Tasks ${totalTasks ? `<span style="font-size:13px;color:var(--muted);font-weight:300">(${doneTasks}/${totalTasks} done)</span>` : ''}</span>
     </div>
     <div class="task-list">${tasksHTML}</div>
     ${addTaskInDetail}
     <div style="display:flex;gap:10px;margin-top:24px;justify-content:flex-end">
-      ${directorActions}
+      ${isDir ? `<button class="btn-danger" onclick="deleteProject('${id}')">Delete Project</button>` : ''}
       <button class="btn-outline" onclick="closeModal('projectDetailModal')">Close</button>
     </div>`;
       openModal('projectDetailModal');
@@ -2275,13 +2301,17 @@
       p.progress = Math.round((p.tasks.filter(t => t.status === 'done').length / p.tasks.length) * 100);
     }
 
-    function deleteProject(id) {
-      const p = S.projects.find(x => x.id === id);
-      if (!p || !confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
-      S.projects = S.projects.filter(x => x.id !== id);
-      closeModal('projectDetailModal'); renderProjects(S.filterStatus);
-      showToast(`"${p.title}" deleted`, 'director');
+    function changeProjectStatus(id) {
+      const p = S.projects.find(x => x.id === id); if (!p) return;
+      const next = { upcoming: 'in_progress', in_progress: 'completed', completed: 'upcoming' };
+      const labels = { upcoming: 'In Progress', in_progress: 'Completed', completed: 'Upcoming' };
+      const oldStatus = p.status;
+      p.status = next[p.status];
+      pushNotif(`🎬 Project <strong>${p.title}</strong> moved to <strong>${labels[p.status]}</strong>`, { type: p.status === 'completed' ? 'done' : 'director' });
+      addActivity(`Project <strong>${p.title}</strong> moved to <strong>${labels[p.status]}</strong>`);
+      renderProjects(S.filterStatus);
       refreshHomeStats();
+      openProjectDetail(id); // refresh modal
     }
 
     // ─── NEW PROJECT with tasks ───
