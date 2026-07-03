@@ -799,30 +799,39 @@
       b.textContent = i.type === 'password' ? 'Show' : 'Hide';
     }
 
-    async function doLogin() {
-      const email = document.getElementById('emailInput').value.trim() || 'sohimaproduction@gmail.com';
-      const role = S.selectedRole || 'director';
-      const nameField = document.getElementById('nameInput').value.trim();
-      const n = nameField || email.split('@')[0].split('.').map(p => p[0].toUpperCase() + p.slice(1)).join(' ');
-      S.currentUser = { name: n, email, role, initials: n.split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase() };
-      S.notifications = [];
+      async function doLogin() {
+  const email = document.getElementById('emailInput').value.trim() || 'sohimaproduction@gmail.com';
+  const role = S.selectedRole || 'director';
+  const nameField = document.getElementById('nameInput').value.trim();
+  const n = nameField || email.split('@')[0].split('.').map(p => p[0].toUpperCase() + p.slice(1)).join(' ');
 
-      showLoading('Connecting to Firestore…');
-      try {
-        await seedIfEmpty();
-        await loadTeam();
-        await loadProjects();
-        setupDashboard();
-        goTo('dashboard');
-        startRealTimeSync();
-        await pushActivityToDB(`<strong>${n}</strong> signed in as ${ROLE_LABELS[role]}`);
-      } catch(e) {
-        console.error(e);
-        alert('Firebase error: ' + e.message);
-      } finally {
-        hideLoading();
-      }
-    }
+  showLoading('Connecting to Firestore…');
+  try {
+    await seedIfEmpty();
+    await loadTeam();
+    await loadProjects();
+
+    const matchedMember = S.team.find(m => m.email.toLowerCase() === email.toLowerCase())
+                        || S.team.find(m => m.role === role);
+
+    S.currentUser = {
+      name: n, email, role,
+      initials: n.split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase(),
+      memberId: matchedMember ? matchedMember.id : null
+    };
+    S.notifications = [];
+
+    setupDashboard();
+    goTo('dashboard');
+    startRealTimeSync();
+    await pushActivityToDB(`<strong>${n}</strong> signed in as ${ROLE_LABELS[role]}`);
+  } catch(e) {
+    console.error(e);
+    alert('Firebase error: ' + e.message);
+  } finally {
+    hideLoading();
+  }
+}
 
     // ─── DASHBOARD ───
     function setupDashboard() {
