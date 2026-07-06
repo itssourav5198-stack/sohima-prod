@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sohima Production</title>
-     <link rel="icon" type="image/png" href="production logo.png">
+  <link rel="icon" type="image/png" href="production logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0 }
@@ -69,6 +69,7 @@
     .otp-cell.active { border-bottom-color: var(--gold-light) }
     .code-error { color: var(--red); font-size: 13px; min-height: 20px; margin-bottom: 16px }
     .code-lockout { color: var(--amber); font-size: 13px; margin-bottom: 12px }
+    .code-note { font-size: 12px; color: var(--muted); margin-top: 18px; line-height: 1.6; font-weight: 300 }
     .attempts-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border) }
     .dot.used { background: var(--red) }
@@ -77,13 +78,17 @@
     .login-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px 40px }
     .login-box { max-width: 400px; width: 100% }
     .login-box h2 { font-size: 34px; font-weight: 300; margin-bottom: 8px }
-    .login-box p { color: var(--muted); font-size: 14px; margin-bottom: 36px; font-weight: 300 }
+    .login-box p { color: var(--muted); font-size: 14px; margin-bottom: 28px; font-weight: 300 }
+    .auth-toggle { display: flex; border: 1px solid var(--border); margin-bottom: 28px }
+    .auth-toggle-btn { flex: 1; text-align: center; padding: 11px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; color: var(--muted); background: transparent; border: none; font-family: 'Jost', sans-serif; transition: all .2s }
+    .auth-toggle-btn.active { background: var(--gold); color: var(--bg) }
     .form-field { margin-bottom: 22px }
     .form-label { display: block; font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 9px }
     .form-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); padding: 12px 0; font-size: 15px; color: var(--cream); font-family: 'Jost', sans-serif; outline: none; transition: border-color .2s }
     .form-input:focus { border-bottom-color: var(--gold) }
     .pw-wrap { position: relative }
     .pw-toggle { position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; letter-spacing: .08em; text-transform: uppercase }
+    .auth-error { color: var(--red); font-size: 13px; min-height: 18px; margin-bottom: 8px }
 
     /* LOADING OVERLAY */
     .loading-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px }
@@ -98,12 +103,10 @@
     .dash-logo { font-family: 'Bebas Neue', sans-serif; letter-spacing: .1em; color: var(--gold); font-size: 20px }
     .dash-right { display: flex; align-items: center; gap: 16px }
 
-    /* LIVE BADGE */
     .live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--green); background: #0A1F0A; border: 1px solid #1F3A1F; padding: 4px 10px }
     .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-    /* NOTIFICATION BELL */
     .notif-bell-wrap { position: relative; cursor: pointer }
     .notif-bell { width: 36px; height: 36px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; background: var(--s1); transition: all .2s }
     .notif-bell:hover { border-color: var(--gold) }
@@ -136,7 +139,6 @@
     .tab-view { display: none }
     .tab-view.active { display: block }
 
-    /* HOME */
     .welcome-line { font-size: 30px; font-weight: 300; margin-bottom: 4px }
     .welcome-line span { color: var(--gold) }
     .welcome-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; font-weight: 300 }
@@ -153,7 +155,6 @@
     .activity-msg strong { color: var(--gold); font-weight: 500 }
     .activity-time { font-size: 12px; color: var(--muted); white-space: nowrap; margin-top: 2px; flex-shrink: 0 }
 
-    /* PROJECTS */
     .filter-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px }
     .filter-tab { padding: 11px 22px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .2s; font-weight: 300 }
     .filter-tab:hover { color: var(--cream) }
@@ -177,9 +178,9 @@
     .add-btn-dashed { display: flex; align-items: center; gap: 8px; padding: 11px 22px; border: 1px dashed var(--gold-dim); color: var(--gold-dim); font-family: 'Jost', sans-serif; font-size: 12px; cursor: pointer; background: transparent; transition: all .2s; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 20px }
     .add-btn-dashed:hover { border-color: var(--gold); color: var(--gold) }
 
-    /* TEAM */
     .team-list { display: flex; flex-direction: column; gap: 8px }
     .team-member { background: var(--s1); border: 1px solid var(--border); padding: 16px 22px; display: flex; align-items: center; gap: 18px }
+    .team-member.pending { opacity: .55; border-style: dashed }
     .tm-info { flex: 1 }
     .tm-name { font-size: 15px; font-weight: 400; margin-bottom: 3px }
     .tm-email { font-size: 12px; color: var(--muted); font-weight: 300 }
@@ -189,14 +190,12 @@
     .tm-role-badge.narrator { border-color: #D85A30; color: #D85A30 }
     .tm-role-badge.author { border-color: #7F77DD; color: #7F77DD }
     .tm-role-badge.producer { border-color: var(--blue); color: var(--blue) }
-    .online-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0 }
-    .online-dot.online { background: #3B9A3B }
-    .online-dot.offline { background: var(--border) }
+    .pending-badge { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 3px 10px; border: 1px dashed var(--muted); color: var(--muted) }
+    .invite-code-display { font-family: 'Bebas Neue', sans-serif; letter-spacing: .15em; font-size: 22px; color: var(--gold); background: var(--s2); border: 1px dashed var(--gold-dim); padding: 14px; text-align: center; margin: 16px 0; cursor: pointer }
     .tm-projects { font-size: 12px; color: var(--muted); margin-top: 4px }
     .icon-btn { background: none; border: 1px solid var(--border); padding: 7px 12px; color: var(--muted); cursor: pointer; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; transition: all .2s }
     .icon-btn:hover { border-color: var(--red); color: var(--red) }
 
-    /* PROFILE */
     .profile-card { max-width: 520px; background: var(--s1); border: 1px solid var(--border); padding: 36px }
     .profile-avatar-big { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 500; color: var(--gold); background: var(--s2); margin-bottom: 20px; font-family: 'Jost', sans-serif }
     .profile-name { font-size: 30px; font-weight: 300; margin-bottom: 4px }
@@ -208,7 +207,6 @@
     .logout-btn { margin-top: 28px; padding: 12px 32px; border: 1px solid var(--red); color: var(--red); background: transparent; font-family: 'Jost', sans-serif; font-size: 12px; letter-spacing: .15em; text-transform: uppercase; cursor: pointer; transition: all .2s }
     .logout-btn:hover { background: var(--red); color: #fff }
 
-    /* MODALS */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 200; align-items: center; justify-content: center }
     .modal-overlay.open { display: flex }
     .modal { background: var(--s1); border: 1px solid var(--border); border-top: 2px solid var(--gold); max-width: 600px; width: 94%; max-height: 88vh; overflow-y: auto; padding: 36px }
@@ -223,7 +221,6 @@
     .form-row textarea { resize: vertical; min-height: 70px }
     .modal-actions { display: flex; gap: 10px; margin-top: 28px; justify-content: flex-end }
 
-    /* TASK BUILDER */
     .task-builder { margin-top: 8px }
     .task-builder-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px }
     .task-builder-title { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted) }
@@ -237,7 +234,6 @@
     .task-row-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 0 4px; line-height: 1 }
     .task-row-del:hover { color: var(--red) }
 
-    /* PROJECT DETAIL */
     .proj-detail-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 24px }
     .proj-detail-type { display: inline-block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 12px; border: 1px solid var(--gold); color: var(--gold); margin-bottom: 12px }
     .proj-detail-title { font-size: 28px; font-weight: 300; margin-bottom: 10px }
@@ -254,11 +250,12 @@
     .task-assignee { font-size: 12px; color: var(--muted); white-space: nowrap }
     .task-cycle-btn { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; transition: all .2s; white-space: nowrap }
     .task-cycle-btn:hover { border-color: var(--gold); color: var(--gold) }
+    .task-cycle-btn:disabled { opacity: .3; cursor: default }
     .no-tasks { font-size: 13px; color: var(--muted); font-weight: 300; padding: 20px 0; text-align: center }
     .dir-task-assign-select { font-size: 12px; background: var(--s2); border: 1px solid var(--border); color: var(--cream); padding: 4px 8px; font-family: 'Jost', sans-serif; cursor: pointer }
     .dir-task-assign-select option { background: var(--s2) }
+    .dir-task-assign-select:disabled { opacity: .5 }
 
-    /* TOAST */
     .toast-stack { position: fixed; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 10px; align-items: flex-end }
     .toast { background: var(--s2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 14px 20px; font-size: 13px; color: var(--cream); transform: translateX(120%); transition: transform .3s; max-width: 320px; font-weight: 300; pointer-events: none; line-height: 1.5 }
     .toast.show { transform: translateX(0) }
@@ -267,19 +264,18 @@
     .toast.type-progress { border-left-color: var(--amber) }
     .toast.type-member { border-left-color: var(--teal) }
     .toast.type-director { border-left-color: var(--blue) }
+    .toast.type-error { border-left-color: var(--red) }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0) }
   </style>
 </head>
 <body>
   <h2 class="sr-only">Sohima Production — cinematic production management platform</h2>
 
-  <!-- LOADING OVERLAY -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Loading</div>
+    <div class="loading-text" id="loadingText">Loading</div>
   </div>
 
-  <!-- TOAST STACK -->
   <div class="toast-stack" id="toastStack"></div>
 
   <!-- ██ SPLASH ██ -->
@@ -308,7 +304,7 @@
     </div>
     <div class="screen-title">
       <h2>Who are you?</h2>
-      <p>Select your role to begin. Access level is determined by your role.</p>
+      <p>Select your role to begin. This only decides which portal you enter — your actual identity is verified next with your invite code and account login.</p>
     </div>
     <div class="role-grid">
       <div class="role-card" data-role="director" onclick="selectRole(this)">
@@ -353,7 +349,7 @@
       <div class="code-box">
         <div class="code-role-badge" id="codeBadge">🎬 &nbsp; Director</div>
         <h2 class="code-title">Enter Access Code</h2>
-        <p class="code-sub">Your 6-character code was assigned by the Director.<br>Contact them if you haven't received it yet.</p>
+        <p class="code-sub">This is the studio's shared portal code for this role — it only unlocks the sign-in screen. It is <strong>not</strong> your password and does not grant any access by itself.</p>
         <div class="otp-row" id="otpRow" onclick="focusOtp()">
           <div class="otp-cell" id="cell0"></div>
           <div class="otp-cell" id="cell1"></div>
@@ -373,11 +369,12 @@
         <button class="btn-gold" style="width:100%" id="verifyBtn" onclick="verifyCode()">Verify Code</button>
         <br><br>
         <button class="btn-outline" onclick="goTo('roleselect')">← Change Role</button>
+        <div class="code-note">Real access is enforced by your personal invite code (new members) and your email + password (returning members) on the next screen — not by this shared code.</div>
       </div>
     </div>
   </div>
 
-  <!-- ██ LOGIN ██ -->
+  <!-- ██ LOGIN / SIGNUP ██ -->
   <div class="screen" id="loginscreen">
     <div class="screen-header">
       <div class="screen-header-logo">Sohima Production</div>
@@ -385,12 +382,25 @@
     </div>
     <div class="login-body">
       <div class="login-box">
-        <h2>Sign In</h2>
-        <p>Access your workspace with your registered credentials.</p>
-        <div class="form-field">
-          <label class="form-label">Name</label>
-          <input type="text" class="form-input" id="nameInput" placeholder="Your Name" />
+        <div class="auth-toggle">
+          <button class="auth-toggle-btn active" id="tabSignIn" onclick="setAuthMode('signin')">Sign In</button>
+          <button class="auth-toggle-btn" id="tabSignUp" onclick="setAuthMode('signup')">First time? Sign Up</button>
         </div>
+
+        <h2 id="authTitle">Sign In</h2>
+        <p id="authSub">Access your workspace with your registered account.</p>
+
+        <div id="signupOnlyFields">
+          <div class="form-field">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="nameInput" placeholder="Your Name" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Invite Code</label>
+            <input type="text" class="form-input" id="inviteInput" placeholder="Given to you by the Director" style="text-transform:uppercase" />
+          </div>
+        </div>
+
         <div class="form-field">
           <label class="form-label">Email Address</label>
           <input type="email" class="form-input" id="emailInput" placeholder="name@gmail.com" />
@@ -402,7 +412,10 @@
             <button class="pw-toggle" onclick="togglePw()" id="pwBtn">Show</button>
           </div>
         </div>
-        <button class="btn-gold" style="width:100%;padding:16px" onclick="doLogin()">Sign In</button>
+        <div class="auth-error" id="authError"></div>
+        <button class="btn-gold" style="width:100%;padding:16px" id="authSubmitBtn" onclick="submitAuth()">Sign In</button>
+        <br><br>
+        <button class="btn-outline" style="width:100%" onclick="goTo('codeentry')">← Back</button>
       </div>
     </div>
   </div>
@@ -437,7 +450,6 @@
       </nav>
       <main class="dash-main">
 
-        <!-- HOME -->
         <div class="tab-view active" id="tab-home">
           <div class="welcome-line">Welcome back, <span id="welcomeName">Sourav</span></div>
           <div class="welcome-sub" id="welcomeSub">Here's what's happening at Sohima Production today.</div>
@@ -452,7 +464,6 @@
           </div>
         </div>
 
-        <!-- PROJECTS -->
         <div class="tab-view" id="tab-projects">
           <div id="directorAddBtn" style="display:none">
             <button class="add-btn-dashed" onclick="openAddProject()">+ &nbsp; New Project</button>
@@ -466,15 +477,13 @@
           <div class="project-grid" id="projectGrid"></div>
         </div>
 
-        <!-- TEAM -->
         <div class="tab-view" id="tab-team">
           <div id="directorAddMemberBtn" style="display:none">
-            <button class="add-btn-dashed" onclick="openModal('addMemberModal')">+ &nbsp; Add Team Member</button>
+            <button class="add-btn-dashed" onclick="openModal('addMemberModal')">+ &nbsp; Invite Team Member</button>
           </div>
           <div class="team-list" id="teamList"></div>
         </div>
 
-        <!-- PROFILE -->
         <div class="tab-view" id="tab-profile">
           <div class="profile-card">
             <div class="profile-avatar-big" id="profileAvatar">AR</div>
@@ -530,11 +539,10 @@
     </div>
   </div>
 
-  <!-- ██ ADD MEMBER MODAL ██ -->
+  <!-- ██ INVITE TEAM MEMBER MODAL ██ -->
   <div class="modal-overlay" id="addMemberModal">
     <div class="modal">
-      <div class="modal-title">Add Team Member <button class="modal-close" onclick="closeModal('addMemberModal')">×</button></div>
-      <div class="form-row"><label>Full Name</label><input type="text" id="newMemberName" placeholder="e.g. Name" /></div>
+      <div class="modal-title">Invite Team Member <button class="modal-close" onclick="closeModal('addMemberModal')">×</button></div>
       <div class="form-row"><label>Email Address</label><input type="email" id="newMemberEmail" placeholder="xyz@gmail.com" /></div>
       <div class="form-row"><label>Role</label>
         <select id="newMemberRole">
@@ -542,12 +550,26 @@
           <option value="editor">Editor / Animator</option>
           <option value="narrator">Narrator / Voice</option>
           <option value="producer">Producer</option>
+          <option value="director">Director</option>
         </select>
       </div>
-      <div style="font-size:13px;color:var(--muted);margin-top:12px;font-weight:300">A Firebase invite will be sent with their unique access code.</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:12px;font-weight:300">This generates a single-use invite code tied to this exact email + role. Share it with them directly (WhatsApp/email) — it only works once, and only for the email you enter here.</div>
       <div class="modal-actions">
         <button class="btn-outline" onclick="closeModal('addMemberModal')">Cancel</button>
-        <button class="btn-gold" onclick="createMember()">Send Invite</button>
+        <button class="btn-gold" onclick="createInvite()">Generate Invite Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ██ INVITE CODE RESULT MODAL ██ -->
+  <div class="modal-overlay" id="inviteResultModal">
+    <div class="modal">
+      <div class="modal-title">Invite Ready <button class="modal-close" onclick="closeModal('inviteResultModal')">×</button></div>
+      <div style="font-size:13px;color:var(--muted);font-weight:300" id="inviteResultDesc"></div>
+      <div class="invite-code-display" id="inviteResultCode" onclick="copyInviteCode()" title="Click to copy">------</div>
+      <div style="font-size:12px;color:var(--muted);text-align:center;font-weight:300">Click the code to copy · single-use · role-locked · email-locked</div>
+      <div class="modal-actions">
+        <button class="btn-gold" onclick="closeModal('inviteResultModal')">Done</button>
       </div>
     </div>
   </div>
@@ -557,8 +579,14 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
     import {
       getFirestore, collection, doc, setDoc, getDoc, getDocs,
-      addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp, writeBatch
+      addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, where,
+      serverTimestamp
     } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import {
+      getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
+      signInWithEmailAndPassword, signOut, updateProfile, setPersistence,
+      browserLocalPersistence
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
     // ─── FIREBASE INIT ───
     const firebaseConfig = {
@@ -571,56 +599,36 @@
     };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+    await setPersistence(auth, browserLocalPersistence).catch(()=>{});
 
     // ─── CONSTANTS ───
-    const CODES = { director:'1947SP', author:'2211WR', editor:'3302EA', narrator:'4413NA', producer:'5524PR' };
+    // These are ONLY a coarse "which portal" gate before the real login screen.
+    // They grant no access on their own — real authorization lives in Firestore
+    // (users/{uid}.role) enforced by security rules, plus per-user invite codes.
+    const DEFAULT_ACCESS_CODES = { director:'1947SP', author:'2211WR', editor:'3302EA', narrator:'4413NA', producer:'5524PR' };
     const ROLE_LABELS = { director:'Director', author:'Author / Writer', editor:'Editor / Animator', narrator:'Narrator / Voice', producer:'Producer' };
     const ROLE_ICONS = { director:'🎬', author:'✍️', editor:'🎨', narrator:'🎙', producer:'📦' };
     const AV_COLORS = ['#C9A84C','#1D9E75','#D85A30','#7F77DD','#5A8FE8','#E8A838'];
     const ROLE_COLORS = { director:'#C9A84C', editor:'#1D9E75', narrator:'#D85A30', author:'#7F77DD', producer:'#5A8FE8' };
 
-    // ─── DEFAULT SEED DATA ───
-    const DEFAULT_TEAM = [
-      { id:'m1', name:'Sourav Maity', email:'sohimaproduction@gmail.com', role:'director', online:true, projects:2 }
-    ];
-    const DEFAULT_PROJECTS = [
-      {
-        id:'p1', title:'Mamta Ki Aanchal', type:'Book', status:'completed',
-        deadline:'2025-05-15', desc:'A love between mother and his son/daughter.',
-        members:['m1'], progress:100,
-        tasks:[
-          { id:'t1', title:'Chapter Writing', assignedTo:'m1', status:'done' },
-          { id:'t2', title:'Chapter Editing', assignedTo:'m1', status:'done' },
-          { id:'t3', title:'Book Publish', assignedTo:'m1', status:'done' }
-        ]
-      },
-      {
-        id:'p2', title:'Uski Aakhein', type:'Book', status:'completed',
-        deadline:'2025-06-15', desc:'About her cuteness, her behaviour and her.',
-        members:['m1'], progress:100,
-        tasks:[
-          { id:'t4', title:'Chapter Writing', assignedTo:'m1', status:'done' },
-          { id:'t5', title:'Chapter Editing', assignedTo:'m1', status:'done' },
-          { id:'t6', title:'Book Publish', assignedTo:'m1', status:'done' }
-        ]
-      }
-    ];
-
     // ─── STATE ───
     let S = {
-      selectedRole: null, currentUser: null, activeTab: 'home',
+      selectedRole: null, authMode: 'signin', currentUser: null,
+      accessCodes: { ...DEFAULT_ACCESS_CODES },
       codeAttempts: 0, locked: false, filterStatus: 'all',
-      projects: [], team: [], notifications: [], newTaskRows: [],
-      unsubProjects: null, unsubActivity: null
+      projects: [], team: [], pendingInvites: [], notifications: [], newTaskRows: [],
+      unsubProjects: null, unsubActivity: null, unsubTeam: null, unsubInvites: null,
+      unsubTasks: null, openProjectId: null, taskCache: {}, lastInviteCode: null
     };
 
-    // Expose to window for HTML onclick handlers
     window.goTo = goTo;
     window.selectRole = selectRole;
     window.focusOtp = focusOtp;
     window.verifyCode = verifyCode;
     window.togglePw = togglePw;
-    window.doLogin = doLogin;
+    window.setAuthMode = setAuthMode;
+    window.submitAuth = submitAuth;
     window.doLogout = doLogout;
     window.switchNav = switchNav;
     window.filterProjects = filterProjects;
@@ -634,7 +642,9 @@
     window.removeTaskRow = removeTaskRow;
     window.createProject = createProject;
     window.removeMember = removeMember;
-    window.createMember = createMember;
+    window.createInvite = createInvite;
+    window.revokeInvite = revokeInvite;
+    window.copyInviteCode = copyInviteCode;
     window.openModal = openModal;
     window.closeModal = closeModal;
     window.toggleNotifPanel = toggleNotifPanel;
@@ -644,57 +654,52 @@
     // ─── LOADING ───
     function showLoading(text='Loading') {
       const el = document.getElementById('loadingOverlay');
-      el.querySelector('.loading-text').textContent = text;
+      document.getElementById('loadingText').textContent = text;
       el.classList.remove('hidden');
     }
     function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 
-    // ─── FIRESTORE HELPERS ───
-    async function seedIfEmpty() {
-      const teamSnap = await getDocs(collection(db, 'team'));
-      if (teamSnap.empty) {
-        const batch = writeBatch(db);
-        DEFAULT_TEAM.forEach(m => batch.set(doc(db, 'team', m.id), m));
-        DEFAULT_PROJECTS.forEach(p => batch.set(doc(db, 'projects', p.id), p));
-        await batch.commit();
+    // ─── ACCESS CODES (coarse gate only, director can rotate via Firestore console) ───
+    async function loadAccessCodes() {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'accessCodes'));
+        if (snap.exists()) S.accessCodes = { ...DEFAULT_ACCESS_CODES, ...snap.data() };
+        else await setDoc(doc(db, 'settings', 'accessCodes'), DEFAULT_ACCESS_CODES).catch(()=>{});
+      } catch(e) { console.warn('Using default access codes (settings doc not readable yet):', e.message); }
+    }
+
+    // ─── AUTH STATE (fixes refresh — real session persistence) ───
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        showLoading('Restoring session…');
+        try {
+          const uSnap = await getDoc(doc(db, 'users', user.uid));
+          if (!uSnap.exists()) {
+            // Auth account exists but no role doc — incomplete signup, force sign-out
+            await signOut(auth);
+            hideLoading();
+            return;
+          }
+          const data = uSnap.data();
+          S.currentUser = { uid: user.uid, name: data.name, email: data.email, role: data.role,
+            initials: data.name.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase() };
+          S.notifications = [];
+          setupDashboard();
+          goTo('dashboard');
+          startRealTimeSync();
+        } catch(e) {
+          console.error(e);
+        } finally { hideLoading(); }
       }
-    }
+    });
 
-    async function loadTeam() {
-      const snap = await getDocs(collection(db, 'team'));
-      S.team = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    }
-
-    async function loadProjects() {
-      const snap = await getDocs(collection(db, 'projects'));
-      S.projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    }
-
-    async function saveProject(project) {
-      await setDoc(doc(db, 'projects', project.id), project);
-    }
-
-    async function removeProject(id) {
-      await deleteDoc(doc(db, 'projects', id));
-    }
-
-    async function saveMember(member) {
-      await setDoc(doc(db, 'team', member.id), member);
-    }
-
-    async function removeMemberFromDB(id) {
-      await deleteDoc(doc(db, 'team', id));
-    }
-
-    async function pushActivityToDB(msg) {
-      await addDoc(collection(db, 'activity'), {
-        msg, time: serverTimestamp()
-      });
-    }
+    // ─── FIRESTORE SAVE HELPERS ───
+    async function saveProject(project) { await setDoc(doc(db, 'projects', project.id), project); }
+    async function removeProjectDB(id) { await deleteDoc(doc(db, 'projects', id)); }
+    async function pushActivityToDB(msg) { await addDoc(collection(db, 'activity'), { msg, time: serverTimestamp() }); }
 
     // ─── REAL-TIME LISTENERS ───
     function startRealTimeSync() {
-      // Projects listener
       if (S.unsubProjects) S.unsubProjects();
       S.unsubProjects = onSnapshot(collection(db, 'projects'), snap => {
         S.projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -702,30 +707,32 @@
         refreshHomeStats();
       });
 
-      // Team listener
-      onSnapshot(collection(db, 'team'), snap => {
+      if (S.unsubTeam) S.unsubTeam();
+      S.unsubTeam = onSnapshot(collection(db, 'users'), snap => {
         S.team = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderTeam();
         refreshHomeStats();
       });
 
-      // Activity listener
+      if (S.unsubInvites) S.unsubInvites();
+      if (S.currentUser.role === 'director') {
+        const invQ = query(collection(db, 'inviteCodes'), where('used','==', false));
+        S.unsubInvites = onSnapshot(invQ, snap => {
+          S.pendingInvites = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderTeam();
+        });
+      }
+
       if (S.unsubActivity) S.unsubActivity();
       const actQ = query(collection(db, 'activity'), orderBy('time', 'desc'), limit(8));
       S.unsubActivity = onSnapshot(actQ, snap => {
         const feed = document.getElementById('activityFeed');
         if (!feed) return;
-        if (snap.empty) {
-          feed.innerHTML = '<div style="color:var(--muted);font-size:13px;font-weight:300;padding:16px 0">No activity yet.</div>';
-          return;
-        }
+        if (snap.empty) { feed.innerHTML = '<div style="color:var(--muted);font-size:13px;font-weight:300;padding:16px 0">No activity yet.</div>'; return; }
         feed.innerHTML = snap.docs.map(d => {
           const data = d.data();
           const timeStr = data.time ? formatAgo(data.time.toDate()) : 'Just now';
-          return `<div class="activity-item">
-            <div class="activity-msg">${data.msg}</div>
-            <div class="activity-time">${timeStr}</div>
-          </div>`;
+          return `<div class="activity-item"><div class="activity-msg">${data.msg}</div><div class="activity-time">${timeStr}</div></div>`;
         }).join('');
       });
     }
@@ -735,6 +742,7 @@
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       if (id === 'codeentry') initCodeEntry();
+      if (id === 'loginscreen') { document.getElementById('authError').textContent=''; }
     }
 
     // ─── ROLE SELECT ───
@@ -746,9 +754,9 @@
       document.getElementById('roleSelMsg').textContent = ROLE_ICONS[S.selectedRole] + ' ' + ROLE_LABELS[S.selectedRole] + ' selected';
     }
 
-    // ─── CODE ENTRY ───
+    // ─── CODE ENTRY (coarse gate only) ───
     let otpVal = '';
-    function initCodeEntry() {
+    async function initCodeEntry() {
       otpVal = ''; S.codeAttempts = 0; S.locked = false;
       document.getElementById('codeBadge').innerHTML = ROLE_ICONS[S.selectedRole] + '&nbsp;&nbsp;' + ROLE_LABELS[S.selectedRole];
       document.getElementById('codeError').textContent = '';
@@ -756,6 +764,7 @@
       document.getElementById('verifyBtn').disabled = false;
       document.querySelectorAll('.dot').forEach(d => d.classList.remove('used'));
       renderOTP('');
+      await loadAccessCodes();
       setTimeout(focusOtp, 100);
     }
     function focusOtp() { document.getElementById('hiddenOtp').focus(); }
@@ -769,7 +778,7 @@
     }
     function verifyCode() {
       if (S.locked) return;
-      if (otpVal === CODES[S.selectedRole]) { goTo('loginscreen'); }
+      if (otpVal === S.accessCodes[S.selectedRole]) { goTo('loginscreen'); }
       else {
         S.codeAttempts++;
         document.getElementById('d' + (S.codeAttempts - 1)).classList.add('used');
@@ -793,46 +802,89 @@
       }, 1000);
     }
 
-    // ─── LOGIN ───
+    // ─── LOGIN / SIGNUP (real Firebase Auth) ───
     function togglePw() {
       const i = document.getElementById('pwInput'); const b = document.getElementById('pwBtn');
       i.type = i.type === 'password' ? 'text' : 'password';
       b.textContent = i.type === 'password' ? 'Show' : 'Hide';
     }
 
-      async function doLogin() {
-  const email = document.getElementById('emailInput').value.trim() || 'sohimaproduction@gmail.com';
-  const role = S.selectedRole || 'director';
-  const nameField = document.getElementById('nameInput').value.trim();
-  const n = nameField || email.split('@')[0].split('.').map(p => p[0].toUpperCase() + p.slice(1)).join(' ');
+    function setAuthMode(mode) {
+      S.authMode = mode;
+      document.getElementById('tabSignIn').classList.toggle('active', mode==='signin');
+      document.getElementById('tabSignUp').classList.toggle('active', mode==='signup');
+      document.getElementById('signupOnlyFields').style.display = mode==='signup' ? 'block' : 'none';
+      document.getElementById('authTitle').textContent = mode==='signup' ? 'Create Your Account' : 'Sign In';
+      document.getElementById('authSub').textContent = mode==='signup'
+        ? 'Use the invite code your Director sent you to activate your account.'
+        : 'Access your workspace with your registered account.';
+      document.getElementById('authSubmitBtn').textContent = mode==='signup' ? 'Create Account' : 'Sign In';
+      document.getElementById('authError').textContent = '';
+    }
 
-  showLoading('Connecting to Firestore…');
-  try {
-    await seedIfEmpty();
-    await loadTeam();
-    await loadProjects();
+    async function submitAuth() {
+      const email = document.getElementById('emailInput').value.trim();
+      const pw = document.getElementById('pwInput').value;
+      const errEl = document.getElementById('authError');
+      errEl.textContent = '';
+      if (!email || !pw) { errEl.textContent = 'Email and password are required.'; return; }
 
-    const matchedMember = S.team.find(m => m.email.toLowerCase() === email.toLowerCase())
-                        || S.team.find(m => m.role === role);
+      if (S.authMode === 'signup') {
+        const name = document.getElementById('nameInput').value.trim();
+        const code = document.getElementById('inviteInput').value.trim().toUpperCase();
+        if (!name || !code) { errEl.textContent = 'Name and invite code are required.'; return; }
+        if (pw.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
 
-    S.currentUser = {
-      name: n, email, role,
-      initials: n.split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase(),
-      memberId: matchedMember ? matchedMember.id : null
-    };
-    S.notifications = [];
+        showLoading('Validating invite code…');
+        try {
+          const invRef = doc(db, 'inviteCodes', code);
+          const invSnap = await getDoc(invRef);
+          if (!invSnap.exists()) throw new Error('Invite code not found. Check with your Director.');
+          const inv = invSnap.data();
+          if (inv.used) throw new Error('This invite code has already been used.');
+          if (inv.email.toLowerCase() !== email.toLowerCase()) throw new Error('This invite code is registered to a different email.');
+          if (inv.role !== S.selectedRole) throw new Error(`This invite code is for ${ROLE_LABELS[inv.role]}, not ${ROLE_LABELS[S.selectedRole]}.`);
 
-    setupDashboard();
-    goTo('dashboard');
-    startRealTimeSync();
-    await pushActivityToDB(`<strong>${n}</strong> signed in as ${ROLE_LABELS[role]}`);
-  } catch(e) {
-    console.error(e);
-    alert('Firebase error: ' + e.message);
-  } finally {
-    hideLoading();
-  }
-}
+          showLoading('Creating your account…');
+          const cred = await createUserWithEmailAndPassword(auth, email, pw);
+          const uid = cred.user.uid;
+          try {
+            await updateProfile(cred.user, { displayName: name });
+            await setDoc(doc(db, 'users', uid), {
+              name, email, role: inv.role, usedInviteCode: code, createdAt: serverTimestamp()
+            });
+            await updateDoc(invRef, { used: true, usedBy: uid, usedAt: serverTimestamp() });
+            await pushActivityToDB(`<strong>${name}</strong> joined the team as ${ROLE_LABELS[inv.role]}`);
+          } catch (innerErr) {
+            // Roll back the auth account so we don't leave a half-created user
+            await cred.user.delete().catch(()=>{});
+            throw innerErr;
+          }
+          // onAuthStateChanged will now pick this user up and load the dashboard
+        } catch (e) {
+          hideLoading();
+          errEl.textContent = friendlyAuthError(e);
+        }
+      } else {
+        showLoading('Signing in…');
+        try {
+          await signInWithEmailAndPassword(auth, email, pw);
+          // onAuthStateChanged handles the rest
+        } catch (e) {
+          hideLoading();
+          errEl.textContent = friendlyAuthError(e);
+        }
+      }
+    }
+
+    function friendlyAuthError(e) {
+      const m = e.message || '';
+      if (m.includes('auth/invalid-credential') || m.includes('auth/wrong-password') || m.includes('auth/user-not-found')) return 'Incorrect email or password.';
+      if (m.includes('auth/email-already-in-use')) return 'An account with this email already exists — try Sign In instead.';
+      if (m.includes('auth/weak-password')) return 'Password must be at least 6 characters.';
+      if (m.includes('auth/invalid-email')) return 'Enter a valid email address.';
+      return m.replace('Firebase: ', '').replace(/\(auth\/[^)]+\)\.?/,'').trim() || 'Something went wrong. Please try again.';
+    }
 
     // ─── DASHBOARD ───
     function setupDashboard() {
@@ -843,12 +895,12 @@
       document.getElementById('profileName').textContent = u.name;
       document.getElementById('profileEmail').textContent = u.email;
       document.getElementById('profileRole').textContent = ROLE_LABELS[u.role];
-      document.getElementById('profileMeta').textContent = ROLE_LABELS[u.role] + ' · Since June 2024';
+      document.getElementById('profileMeta').textContent = ROLE_LABELS[u.role] + ' · Sohima Production';
       document.getElementById('headerRolePill').textContent = ROLE_LABELS[u.role];
       document.getElementById('projectsNavLabel').textContent = isDir ? 'Projects' : 'My Projects';
       document.getElementById('directorAddBtn').style.display = isDir ? 'block' : 'none';
       document.getElementById('directorAddMemberBtn').style.display = isDir ? 'block' : 'none';
-      if (!isDir) document.getElementById('welcomeSub').textContent = 'Here are your assigned projects and tasks.';
+      document.getElementById('welcomeSub').textContent = isDir ? "Here's what's happening at Sohima Production today." : 'Here are your assigned projects and tasks.';
       renderProjects('all'); renderTeam();
       switchNav('home', document.querySelector('.nav-item'));
       updateNotifBadge(); refreshHomeStats();
@@ -860,12 +912,9 @@
       const done = S.projects.filter(p => p.status === 'completed').length;
       const team = S.team.length;
       if (isDir) {
-        const sA = document.getElementById('statActive');
-        const sT = document.getElementById('statTeam');
-        const sD = document.getElementById('statDone');
-        if (sA) sA.textContent = active;
-        if (sT) sT.textContent = team;
-        if (sD) sD.textContent = done;
+        const sA = document.getElementById('statActive'); if (sA) sA.textContent = active;
+        const sT = document.getElementById('statTeam'); if (sT) sT.textContent = team;
+        const sD = document.getElementById('statDone'); if (sD) sD.textContent = done;
       }
     }
 
@@ -876,54 +925,77 @@
       tab.classList.add('active'); renderProjects(status);
     }
     function getAvatarBg(i) { return AV_COLORS[i % AV_COLORS.length]; }
-    function getMemberInitials(mid) { const m = S.team.find(t => t.id === mid); return m ? m.name.split(' ').map(x => x[0]).join('') : '?'; }
-    function getMemberName(mid) { const m = S.team.find(t => t.id === mid); return m ? m.name : 'Unassigned'; }
+    function getMemberInitials(uid) { const m = S.team.find(t => t.id === uid); return m ? m.name.split(' ').map(x => x[0]).join('') : '?'; }
+    function getMemberName(uid) { const m = S.team.find(t => t.id === uid); return m ? m.name : 'Unassigned'; }
 
-    function renderProjects(filter) {
+    async function fetchTaskCounts(pid) {
+      const snap = await getDocs(collection(db, 'projects', pid, 'tasks'));
+      const tasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const done = tasks.filter(t => t.status === 'done').length;
+      return { tasks, total: tasks.length, done, pct: tasks.length ? Math.round(done/tasks.length*100) : 0 };
+    }
+
+    async function renderProjects(filter) {
       const isDir = S.currentUser?.role === 'director';
+      const uid = S.currentUser?.uid;
       let projs = [...S.projects];
-      if (!isDir) {
-        const uid = S.currentUser?.memberId || 'm2';
-        projs = projs.filter(p => p.members?.includes(uid) || p.tasks?.some(t => t.assignedTo === uid));
-      }
+      if (!isDir) projs = projs.filter(p => p.members?.includes(uid));
       if (filter !== 'all') projs = projs.filter(p => p.status === filter);
       const grid = document.getElementById('projectGrid');
       if (!projs.length) { grid.innerHTML = '<div style="color:var(--muted);font-size:14px;font-weight:300;padding:36px 0">No projects in this category.</div>'; return; }
-      grid.innerHTML = projs.map(p => {
-        const stack = (p.members || []).slice(0,4).map((mid,i) => `<div class="member-av" style="background:${getAvatarBg(i)};color:#080808">${getMemberInitials(mid)}</div>`).join('');
-        const sl = { completed:'Completed', in_progress:'In Progress', upcoming:'Upcoming' }[p.status];
-        const dl = p.deadline ? new Date(p.deadline).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-        return `<div class="project-card" onclick="openProjectDetail('${p.id}')">
+
+      grid.innerHTML = projs.map(p => `<div class="project-card" onclick="openProjectDetail('${p.id}')" id="pcard-${p.id}">
           <div class="project-card-top"><div class="project-title">${p.title}</div><div class="type-badge">${p.type}</div></div>
-          <div class="status-pill ${p.status}">${sl}</div>
-          <div class="member-stack">${stack}</div>
-          <div class="progress-track"><div class="progress-fill" style="width:${p.progress||0}%"></div></div>
-          <div class="project-meta"><span>${p.progress||0}% complete</span><span>📅 ${dl}</span></div>
-        </div>`;
-      }).join('');
+          <div class="status-pill ${p.status}">${{completed:'Completed',in_progress:'In Progress',upcoming:'Upcoming'}[p.status]}</div>
+          <div class="member-stack">${(p.members||[]).slice(0,4).map((mid,i)=>`<div class="member-av" style="background:${getAvatarBg(i)};color:#080808">${getMemberInitials(mid)}</div>`).join('')}</div>
+          <div class="progress-track"><div class="progress-fill" id="pfill-${p.id}" style="width:0%"></div></div>
+          <div class="project-meta"><span id="ppct-${p.id}">…</span><span>📅 ${p.deadline ? new Date(p.deadline).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'}</span></div>
+        </div>`).join('');
+
+      // Progressive: fetch real task counts per project (correctness over premature caching)
+      projs.forEach(async p => {
+        const { total, done, pct } = await fetchTaskCounts(p.id).catch(()=>({total:0,done:0,pct:0}));
+        const fill = document.getElementById('pfill-'+p.id); if (fill) fill.style.width = pct + '%';
+        const lbl = document.getElementById('ppct-'+p.id); if (lbl) lbl.textContent = `${pct}% complete (${done}/${total} tasks)`;
+      });
     }
 
-    // ─── PROJECT DETAIL ───
-    function openProjectDetail(id) {
+    // ─── PROJECT DETAIL (tasks now live in a subcollection) ───
+    async function openProjectDetail(id) {
       const p = S.projects.find(x => x.id === id); if (!p) return;
+      S.openProjectId = id;
       const isDir = S.currentUser?.role === 'director';
+      const uid = S.currentUser?.uid;
+
+      if (S.unsubTasks) { S.unsubTasks(); S.unsubTasks = null; }
+      S.unsubTasks = onSnapshot(collection(db, 'projects', id, 'tasks'), snap => {
+        S.taskCache[id] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (S.openProjectId === id) renderProjectDetailBody(p);
+      });
+
+      openModal('projectDetailModal');
+    }
+
+    function renderProjectDetailBody(p) {
+      const isDir = S.currentUser?.role === 'director';
+      const uid = S.currentUser?.uid;
+      const tasks = S.taskCache[p.id] || [];
       const dl = p.deadline ? new Date(p.deadline).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-      const memberOpts = S.team.map(m => `<option value="${m.id}">${m.name} (${ROLE_LABELS[m.role]})</option>`).join('');
       const nextTaskStatus = { not_started:'in_progress', in_progress:'done', done:'not_started' };
       const taskBtnLabel = { not_started:'START', in_progress:'MARK DONE', done:'REOPEN' };
       const taskBtnColor = { not_started:'var(--gold)', in_progress:'var(--green)', done:'var(--muted)' };
-      const tasks = p.tasks || [];
 
       const tasksHTML = tasks.length ? tasks.map(t => {
+        const canAct = isDir || t.assignedTo === uid;
         const assigneeCell = isDir
-          ? `<select class="dir-task-assign-select" onchange="reassignTask('${id}','${t.id}',this.value)">${S.team.map(m => `<option value="${m.id}"${m.id===t.assignedTo?' selected':''}>${m.name}</option>`).join('')}</select>`
+          ? `<select class="dir-task-assign-select" onchange="reassignTask('${p.id}','${t.id}',this.value)">${S.team.map(m => `<option value="${m.id}"${m.id===t.assignedTo?' selected':''}>${m.name}</option>`).join('')}</select>`
           : `<span class="task-assignee">${getMemberName(t.assignedTo).split(' ')[0]}</span>`;
         return `<div class="task-item" id="taskrow-${t.id}">
           <div class="task-status-dot ${t.status}"></div>
           <div class="task-name" style="${t.status==='done'?'text-decoration:line-through;color:var(--muted)':''}">${t.title}</div>
           ${assigneeCell}
           <button class="task-cycle-btn" style="border-color:${taskBtnColor[t.status]};color:${taskBtnColor[t.status]}"
-            onclick="cycleTask('${id}','${t.id}','${nextTaskStatus[t.status]}')">
+            ${canAct ? `onclick="cycleTask('${p.id}','${t.id}','${nextTaskStatus[t.status]}')"` : 'disabled'}>
             ${taskBtnLabel[t.status]}
           </button>
         </div>`;
@@ -932,21 +1004,18 @@
       const nextProjStatus = { upcoming:'in_progress', in_progress:'completed', completed:'upcoming' };
       const projStatusBtn = { upcoming:'▶ Start Project', in_progress:'✓ Mark Completed', completed:'↺ Reopen' };
       const projStatusColor = { upcoming:'var(--blue)', in_progress:'var(--green)', completed:'var(--muted)' };
+      const projStatusChanger = isDir ? `<button onclick="changeProjectStatus('${p.id}')" style="padding:8px 18px;border:1px solid ${projStatusColor[p.status]};color:${projStatusColor[p.status]};background:none;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">${projStatusBtn[p.status]}</button>` : '';
 
-      const projStatusChanger = isDir ? `
-        <button onclick="changeProjectStatus('${id}')"
-          style="padding:8px 18px;border:1px solid ${projStatusColor[p.status]};color:${projStatusColor[p.status]};background:none;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">
-          ${projStatusBtn[p.status]}
-        </button>` : '';
-
+      const memberOpts = S.team.map(m => `<option value="${m.id}">${m.name} (${ROLE_LABELS[m.role]})</option>`).join('');
       const addTaskInDetail = isDir ? `<div style="margin-top:14px;display:flex;gap:8px">
         <input type="text" id="inlineTaskName" placeholder="Task name…" style="flex:1;background:var(--s2);border:none;border-bottom:1px solid var(--border);padding:8px 0;font-size:13px;color:var(--cream);font-family:'Jost',sans-serif;outline:none"/>
         <select id="inlineTaskAssignee" style="background:var(--s2);border:1px solid var(--border);color:var(--cream);padding:6px 8px;font-size:12px;font-family:'Jost',sans-serif">${memberOpts}</select>
-        <button class="btn-gold" style="padding:8px 16px;font-size:12px" onclick="addTaskToProject('${id}')">Add</button>
+        <button class="btn-gold" style="padding:8px 16px;font-size:12px" onclick="addTaskToProject('${p.id}')">Add</button>
       </div>` : '';
 
       const doneTasks = tasks.filter(t => t.status === 'done').length;
       const totalTasks = tasks.length;
+      const pct = totalTasks ? Math.round(doneTasks/totalTasks*100) : 0;
 
       document.getElementById('projectDetailBody').innerHTML = `
         <div class="proj-detail-header">
@@ -960,33 +1029,29 @@
           <div class="proj-detail-desc">${p.desc}</div>
         </div>
         ${totalTasks ? `<div style="margin-bottom:20px">
-          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px">
-            <span>Overall Progress</span><span>${p.progress||0}%</span>
-          </div>
-          <div class="progress-track" style="height:6px"><div class="progress-fill" style="width:${p.progress||0}%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px"><span>Overall Progress</span><span>${pct}%</span></div>
+          <div class="progress-track" style="height:6px"><div class="progress-fill" style="width:${pct}%"></div></div>
           <div style="font-size:12px;color:var(--muted);margin-top:4px">${doneTasks} of ${totalTasks} tasks completed</div>
         </div>` : ''}
-        <div class="task-section-title">
-          <span>Tasks ${totalTasks?`<span style="font-size:13px;color:var(--muted);font-weight:300">(${doneTasks}/${totalTasks} done)</span>`:''}  </span>
-        </div>
+        <div class="task-section-title"><span>Tasks ${totalTasks?`<span style="font-size:13px;color:var(--muted);font-weight:300">(${doneTasks}/${totalTasks} done)</span>`:''}</span></div>
         <div class="task-list">${tasksHTML}</div>
         ${addTaskInDetail}
         <div style="display:flex;gap:10px;margin-top:24px;justify-content:flex-end">
-          ${isDir?`<button class="btn-danger" onclick="deleteProject('${id}')">Delete Project</button>`:''}
+          ${isDir?`<button class="btn-danger" onclick="deleteProject('${p.id}')">Delete Project</button>`:''}
           <button class="btn-outline" onclick="closeModal('projectDetailModal')">Close</button>
         </div>`;
-      openModal('projectDetailModal');
     }
 
+    // Every write below is also enforced server-side by Firestore rules.
+    // The client-side isDir/canAct checks are UX only — they hide buttons for
+    // clarity, they do NOT provide the actual security.
     async function cycleTask(projId, taskId, newStatus) {
       const p = S.projects.find(x => x.id === projId);
-      const t = p?.tasks.find(x => x.id === taskId);
+      const t = (S.taskCache[projId]||[]).find(x => x.id === taskId);
       if (!t) return;
-      t.status = newStatus;
-      recalcProgress(p);
       const assigneeName = getMemberName(t.assignedTo);
       try {
-        await saveProject(p);
+        await updateDoc(doc(db, 'projects', projId, 'tasks', taskId), { status: newStatus });
         if (newStatus === 'done') {
           pushNotif(`✅ <strong>${assigneeName}</strong> completed <em>${t.title}</em> in <strong>${p.title}</strong>`, {type:'done'});
           await pushActivityToDB(`<strong>${assigneeName}</strong> marked <em>${t.title}</em> as Done in <strong>${p.title}</strong>`);
@@ -996,25 +1061,21 @@
         } else {
           pushNotif(`🔄 <em>${t.title}</em> reopened in <strong>${p.title}</strong>`, {type:'director'});
         }
-        openProjectDetail(projId);
-      } catch(e) { console.error(e); showToast('Save failed: ' + e.message, 'done'); }
+      } catch(e) { console.error(e); showToast('Permission denied: ' + e.message, 'error'); }
     }
 
     async function reassignTask(projId, taskId, newMemberId) {
       const p = S.projects.find(x => x.id === projId);
-      const t = p?.tasks.find(x => x.id === taskId);
+      const t = (S.taskCache[projId]||[]).find(x => x.id === taskId);
       if (!t) return;
-      const oldName = getMemberName(t.assignedTo);
       const newName = getMemberName(newMemberId);
-      t.assignedTo = newMemberId;
-      if (!p.members.includes(newMemberId)) p.members.push(newMemberId);
       try {
-        await saveProject(p);
+        await updateDoc(doc(db, 'projects', projId, 'tasks', taskId), { assignedTo: newMemberId });
+        if (!p.members.includes(newMemberId)) { p.members.push(newMemberId); await saveProject(p); }
         pushNotif(`📌 <strong>${t.title}</strong> reassigned to <strong>${newName}</strong>`, {type:'director'});
         await pushActivityToDB(`Director reassigned <em>${t.title}</em> to <strong>${newName}</strong> in <strong>${p.title}</strong>`);
         showToast(`Task reassigned to ${newName}`, 'done');
-        openProjectDetail(projId);
-      } catch(e) { console.error(e); }
+      } catch(e) { console.error(e); showToast('Permission denied: ' + e.message, 'error'); }
     }
 
     async function addTaskToProject(projId) {
@@ -1022,48 +1083,38 @@
       const name = document.getElementById('inlineTaskName').value.trim();
       const assignedTo = document.getElementById('inlineTaskAssignee').value;
       if (!name) return;
-      if (!p.tasks) p.tasks = [];
-      const newTask = { id:'t'+Date.now(), title:name, assignedTo, status:'not_started' };
-      p.tasks.push(newTask);
-      recalcProgress(p);
-      if (!p.members.includes(assignedTo)) p.members.push(assignedTo);
       try {
-        await saveProject(p);
+        await addDoc(collection(db, 'projects', projId, 'tasks'), { title:name, assignedTo, status:'not_started' });
+        if (!p.members.includes(assignedTo)) { p.members.push(assignedTo); await saveProject(p); }
         const assigneeName = getMemberName(assignedTo);
         pushNotif(`📋 New task <em>${name}</em> assigned to <strong>${assigneeName}</strong>`, {type:'director'});
         await pushActivityToDB(`Director added task <em>${name}</em> — assigned to <strong>${assigneeName}</strong> in <strong>${p.title}</strong>`);
-        openProjectDetail(projId);
-      } catch(e) { console.error(e); }
-    }
-
-    function recalcProgress(p) {
-      const tasks = p.tasks || [];
-      p.progress = tasks.length ? Math.round((tasks.filter(t => t.status==='done').length / tasks.length) * 100) : 0;
+        document.getElementById('inlineTaskName').value = '';
+      } catch(e) { console.error(e); showToast('Permission denied: ' + e.message, 'error'); }
     }
 
     async function changeProjectStatus(id) {
       const p = S.projects.find(x => x.id === id); if (!p) return;
       const next = { upcoming:'in_progress', in_progress:'completed', completed:'upcoming' };
       const labels = { in_progress:'In Progress', completed:'Completed', upcoming:'Upcoming' };
-      p.status = next[p.status];
+      const newStatus = next[p.status];
       try {
-        await saveProject(p);
-        pushNotif(`🎬 Project <strong>${p.title}</strong> moved to <strong>${labels[p.status]}</strong>`, {type:p.status==='completed'?'done':'director'});
-        await pushActivityToDB(`Project <strong>${p.title}</strong> moved to <strong>${labels[p.status]}</strong>`);
-        openProjectDetail(id);
-      } catch(e) { console.error(e); }
+        await updateDoc(doc(db, 'projects', id), { status: newStatus });
+        pushNotif(`🎬 Project <strong>${p.title}</strong> moved to <strong>${labels[newStatus]}</strong>`, {type:newStatus==='completed'?'done':'director'});
+        await pushActivityToDB(`Project <strong>${p.title}</strong> moved to <strong>${labels[newStatus]}</strong>`);
+      } catch(e) { console.error(e); showToast('Permission denied: ' + e.message, 'error'); }
     }
 
     async function deleteProject(id) {
       const p = S.projects.find(x => x.id === id);
       if (!p || !confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
       try {
-        await removeProject(id);
+        await removeProjectDB(id);
         S.projects = S.projects.filter(x => x.id !== id);
         closeModal('projectDetailModal');
         await pushActivityToDB(`Director deleted project <strong>${p.title}</strong>`);
         showToast(`"${p.title}" deleted`, 'done');
-      } catch(e) { console.error(e); }
+      } catch(e) { console.error(e); showToast('Permission denied: ' + e.message, 'error'); }
     }
 
     // ─── NEW PROJECT ───
@@ -1091,73 +1142,106 @@
     async function createProject() {
       const title = document.getElementById('newProjTitle').value.trim();
       if (!title) { alert('Enter a project title'); return; }
-      const tasks = S.newTaskRows.map(rid => {
+      const taskRows = S.newTaskRows.map(rid => {
         const n = document.getElementById('tn-'+rid)?.value.trim();
         const a = document.getElementById('ta-'+rid)?.value;
-        return n ? { id:'t'+Date.now()+'_'+Math.random().toString(36).slice(2), title:n, assignedTo:a, status:'not_started' } : null;
+        return n ? { title:n, assignedTo:a, status:'not_started' } : null;
       }).filter(Boolean);
-      const memberIds = [...new Set(['m1', ...tasks.map(t => t.assignedTo)])];
+      const memberIds = [...new Set([S.currentUser.uid, ...taskRows.map(t => t.assignedTo)])];
+      const pid = 'p'+Date.now();
       const newP = {
-        id: 'p'+Date.now(), title, type: document.getElementById('newProjType').value,
+        id: pid, title, type: document.getElementById('newProjType').value,
         status: document.getElementById('newProjStatus').value,
         deadline: document.getElementById('newProjDeadline').value || '2026-12-31',
         desc: document.getElementById('newProjDesc').value || 'No description.',
-        members: memberIds, progress: 0, tasks
+        members: memberIds
       };
       try {
         await saveProject(newP);
-        tasks.forEach(t => pushNotif(`📌 New task <em>${t.title}</em> assigned to <strong>${getMemberName(t.assignedTo)}</strong>`, {type:'director'}));
-        await pushActivityToDB(`Director created project <strong>${title}</strong> with ${tasks.length} task${tasks.length!==1?'s':''}`);
+        for (const t of taskRows) {
+          await addDoc(collection(db, 'projects', pid, 'tasks'), t);
+          pushNotif(`📌 New task <em>${t.title}</em> assigned to <strong>${getMemberName(t.assignedTo)}</strong>`, {type:'director'});
+        }
+        await pushActivityToDB(`Director created project <strong>${title}</strong> with ${taskRows.length} task${taskRows.length!==1?'s':''}`);
         closeModal('addProjectModal');
         showToast(`"${title}" created`, 'done');
       } catch(e) { alert('Error: ' + e.message); }
     }
 
-    // ─── TEAM ───
+    // ─── TEAM (real accounts) + PENDING INVITES ───
     function renderTeam() {
       const isDir = S.currentUser?.role === 'director';
-      document.getElementById('teamList').innerHTML = S.team.map(m => `
+      const activeHTML = S.team.map(m => `
         <div class="team-member">
-          <div class="online-dot ${m.online?'online':'offline'}"></div>
           <div class="avatar" style="width:40px;height:40px;font-size:14px;background:${ROLE_COLORS[m.role]||'#888'};color:#080808">${m.name.split(' ').map(x=>x[0]).join('')}</div>
           <div class="tm-info">
             <div class="tm-name">${m.name} &nbsp;<span class="tm-role-badge ${m.role}">${ROLE_LABELS[m.role]}</span></div>
             <div class="tm-email">${m.email}</div>
-            <div class="tm-projects">${m.online?'<span style="color:#3B9A3B">Online</span>':'<span style="color:var(--muted)">Offline</span>'}</div>
+            <div class="tm-projects"><span style="color:#3B9A3B">Active account</span></div>
           </div>
-          ${isDir && m.role!=='director' ? `<button class="icon-btn" onclick="removeMember('${m.id}')">Remove</button>` : ''}
+          ${isDir && m.id !== S.currentUser.uid ? `<button class="icon-btn" onclick="removeMember('${m.id}')">Remove</button>` : ''}
         </div>`).join('');
+
+      const pendingHTML = (isDir ? S.pendingInvites : []).map(inv => `
+        <div class="team-member pending">
+          <div class="avatar" style="width:40px;height:40px;font-size:14px;background:var(--border);color:var(--muted)">?</div>
+          <div class="tm-info">
+            <div class="tm-name">${inv.email} &nbsp;<span class="pending-badge">Pending Invite</span> &nbsp;<span class="tm-role-badge ${inv.role}">${ROLE_LABELS[inv.role]}</span></div>
+            <div class="tm-email">Code: ${inv.id}</div>
+          </div>
+          <button class="icon-btn" onclick="revokeInvite('${inv.id}')">Revoke</button>
+        </div>`).join('');
+
+      document.getElementById('teamList').innerHTML = activeHTML + pendingHTML || '<div style="color:var(--muted);font-size:14px;font-weight:300;padding:20px 0">No team members yet.</div>';
     }
 
-    async function removeMember(id) {
-      const m = S.team.find(x => x.id === id);
-      if (!m || !confirm(`Remove ${m.name} from the team?`)) return;
+    async function removeMember(uid) {
+      const m = S.team.find(x => x.id === uid);
+      if (!m || !confirm(`Remove ${m.name} from the team? (Their login access is revoked from Firestore; to fully disable their account, also remove them in Firebase Authentication console.)`)) return;
       try {
-        await removeMemberFromDB(id);
-        S.team = S.team.filter(x => x.id !== id); renderTeam();
+        await deleteDoc(doc(db, 'users', uid));
         await pushActivityToDB(`<strong>${m.name}</strong> was removed from the team`);
         showToast(`${m.name} removed`, 'director');
-        refreshHomeStats();
-      } catch(e) { console.error(e); }
+      } catch(e) { console.error(e); showToast('Permission denied: ' + e.message, 'error'); }
     }
 
-    async function createMember() {
-      const name = document.getElementById('newMemberName').value.trim();
+    function randomCode(len=8) {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous 0/O/1/I
+      let out = '';
+      for (let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
+      return out;
+    }
+
+    async function createInvite() {
       const email = document.getElementById('newMemberEmail').value.trim();
       const role = document.getElementById('newMemberRole').value;
-      if (!name || !email) { alert('Fill in all fields'); return; }
-      const newM = { id:'m'+Date.now(), name, email, role, online:false, projects:0 };
+      if (!email) { alert('Enter an email address'); return; }
+      const code = randomCode();
       try {
-        await saveMember(newM);
-        S.team.push(newM); renderTeam();
+        await setDoc(doc(db, 'inviteCodes', code), {
+          email, role, used:false, createdBy: S.currentUser.uid, createdAt: serverTimestamp()
+        });
+        await pushActivityToDB(`Director generated an invite for <strong>${email}</strong> as ${ROLE_LABELS[role]}`);
         closeModal('addMemberModal');
-        pushNotif(`👤 <strong>${name}</strong> joined the team as ${ROLE_LABELS[role]}`, {type:'member'});
-        await pushActivityToDB(`<strong>${name}</strong> joined the team as ${ROLE_LABELS[role]}`);
-        showToast(`${name} added to team`, 'member');
-        document.getElementById('newMemberName').value = '';
         document.getElementById('newMemberEmail').value = '';
-        refreshHomeStats();
+        S.lastInviteCode = code;
+        document.getElementById('inviteResultDesc').textContent = `Share this code with ${email}. It only works for that email, for the ${ROLE_LABELS[role]} role, and only once.`;
+        document.getElementById('inviteResultCode').textContent = code;
+        openModal('inviteResultModal');
       } catch(e) { alert('Error: ' + e.message); }
+    }
+
+    function copyInviteCode() {
+      if (!S.lastInviteCode) return;
+      navigator.clipboard?.writeText(S.lastInviteCode).then(()=> showToast('Code copied to clipboard', 'member')).catch(()=>{});
+    }
+
+    async function revokeInvite(code) {
+      if (!confirm('Revoke this invite code? It will no longer work.')) return;
+      try {
+        await deleteDoc(doc(db, 'inviteCodes', code));
+        showToast('Invite revoked', 'director');
+      } catch(e) { console.error(e); showToast('Permission denied: ' + e.message, 'error'); }
     }
 
     // ─── NOTIFICATIONS ───
@@ -1175,22 +1259,16 @@
     function toggleNotifPanel() {
       const p = document.getElementById('notifPanel');
       p.classList.toggle('open');
-      if (p.classList.contains('open')) {
-        S.notifications.forEach(n => n.read = true);
-        updateNotifBadge(); renderNotifList();
-      }
+      if (p.classList.contains('open')) { S.notifications.forEach(n => n.read = true); updateNotifBadge(); renderNotifList(); }
     }
     function clearAllNotifs() { S.notifications = []; updateNotifBadge(); renderNotifList(); }
     function renderNotifList() {
       const el = document.getElementById('notifList');
       if (!S.notifications.length) { el.innerHTML = '<div class="notif-empty">All caught up ✓</div>'; return; }
-      el.innerHTML = S.notifications.slice(0,20).map(n => {
-        const ago = formatAgo(n.time);
-        return `<div class="notif-item${n.read?'':' unread'}">
+      el.innerHTML = S.notifications.slice(0,20).map(n => `<div class="notif-item${n.read?'':' unread'}">
           <div class="notif-dot${n.read?' read':''}"></div>
-          <div><div class="notif-text">${n.msg}</div><div class="notif-time">${ago}</div></div>
-        </div>`;
-      }).join('');
+          <div><div class="notif-text">${n.msg}</div><div class="notif-time">${formatAgo(n.time)}</div></div>
+        </div>`).join('');
     }
     function formatAgo(d) {
       if (!d) return 'Just now';
@@ -1206,12 +1284,15 @@
       t.className = `toast type-${type}`; t.innerHTML = msg;
       stack.appendChild(t);
       requestAnimationFrame(() => { requestAnimationFrame(() => { t.classList.add('show'); }); });
-      setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 4000);
+      setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 4500);
     }
 
     // ─── MODALS ───
     function openModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      if (id === 'projectDetailModal' && S.unsubTasks) { S.unsubTasks(); S.unsubTasks = null; S.openProjectId = null; }
+    }
 
     // ─── NAV ───
     function switchNav(tab, el) {
@@ -1226,11 +1307,15 @@
     }
 
     // ─── LOGOUT ───
-    function doLogout() {
+    async function doLogout() {
       if (S.unsubProjects) S.unsubProjects();
       if (S.unsubActivity) S.unsubActivity();
+      if (S.unsubTeam) S.unsubTeam();
+      if (S.unsubInvites) S.unsubInvites();
+      if (S.unsubTasks) S.unsubTasks();
+      await signOut(auth);
       S.currentUser = null; S.selectedRole = null; S.notifications = [];
-      S.projects = []; S.team = [];
+      S.projects = []; S.team = []; S.pendingInvites = []; S.taskCache = {};
       goTo('splash');
     }
 
@@ -1244,12 +1329,12 @@
         });
         inp.addEventListener('keydown', e => { if (e.key==='Enter') verifyCode(); });
       }
-      document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); }));
+      document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target===m) closeModal(m.id); }));
       document.addEventListener('click', e => {
-        if (!document.getElementById('notifWrap')?.contains(e.target))
-          document.getElementById('notifPanel')?.classList.remove('open');
+        if (!document.getElementById('notifWrap')?.contains(e.target)) document.getElementById('notifPanel')?.classList.remove('open');
       });
-      hideLoading();
+      // Give onAuthStateChanged a moment to resolve before hiding the splash spinner
+      setTimeout(hideLoading, 400);
     });
   </script>
 </body>
