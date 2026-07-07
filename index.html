@@ -1320,7 +1320,17 @@
     }
 
     // ─── DOM READY ───
-    document.addEventListener('DOMContentLoaded', () => {
+    // NOTE: this module script has a top-level `await` above (setPersistence).
+    // Per spec, DOMContentLoaded does NOT wait for a module's top-level await
+    // to resolve — it can fire before this script resumes. Relying on
+    // `document.addEventListener('DOMContentLoaded', ...)` here meant the
+    // listener got attached AFTER the event had already fired, so it never
+    // ran — which is exactly why hideLoading() was never called and the
+    // spinner spun forever, in every browser, regardless of extensions.
+    // Fix: a deferred module script only ever runs after the DOM is already
+    // parsed, so we don't need to wait for DOMContentLoaded at all — just
+    // run the setup directly.
+    function initAppUI() {
       const inp = document.getElementById('hiddenOtp');
       if (inp) {
         inp.addEventListener('input', e => {
@@ -1335,7 +1345,8 @@
       });
       // Give onAuthStateChanged a moment to resolve before hiding the splash spinner
       setTimeout(hideLoading, 400);
-    });
+    }
+    initAppUI();
   </script>
 </body>
 </html>
